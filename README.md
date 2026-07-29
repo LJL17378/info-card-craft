@@ -27,7 +27,7 @@ npm run dev
 
 1. 创建 Supabase 项目。
 2. 在 SQL Editor 执行 `supabase/migrations/202607290001_initial.sql`。
-3. 在 Authentication → Email Templates 中让邮件展示 `{{ .Token }}`，用于一次性验证码。
+3. 免费套餐默认使用邮箱 Magic Link；如配置自有 SMTP，也可以自行改成 OTP 模板。
 4. 配置以下环境变量：
 
 ```dotenv
@@ -49,7 +49,8 @@ npx vercel env add SUPABASE_SERVICE_ROLE_KEY
 npx vercel --prod
 ```
 
-部署后，在 Supabase Authentication → URL Configuration 中将 Site URL 和 Redirect URLs 更新为正式域名。
+部署后，将 Supabase Site URL 设为正式域名，并允许 `/auth/callback` 回调地址。本仓库的
+`supabase/config.toml` 可以通过 `supabase config push` 自动完成这一步。
 
 ## 嵌入
 

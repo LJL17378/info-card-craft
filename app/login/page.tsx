@@ -15,7 +15,7 @@ export default function LoginPage() {
           </Link>
           <h1>回到你的工坊。</h1>
           <p className="muted" style={{ lineHeight: 1.7, fontSize: 14 }}>
-            无需密码，我们会向你的邮箱发送一次性验证码。
+            无需密码，我们会向你的邮箱发送一条安全登录链接。
           </p>
           <LoginForm />
         </section>

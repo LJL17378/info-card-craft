@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, LoaderCircle, Mail } from "lucide-react";
+import { CheckCircle2, LoaderCircle, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { FormEvent, useMemo, useState } from "react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
@@ -9,7 +9,6 @@ export function LoginForm() {
   const router = useRouter();
   const supabase = useMemo(() => createBrowserSupabaseClient(), []);
   const [email, setEmail] = useState("");
-  const [token, setToken] = useState("");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -23,23 +22,13 @@ export function LoginForm() {
     setLoading(true);
     setError("");
     try {
-      if (!sent) {
-        const { error: sendError } = await supabase.auth.signInWithOtp({
-          email,
-          options: { shouldCreateUser: true },
-        });
-        if (sendError) throw sendError;
-        setSent(true);
-      } else {
-        const { error: verifyError } = await supabase.auth.verifyOtp({
-          email,
-          token,
-          type: "email",
-        });
-        if (verifyError) throw verifyError;
-        router.push("/studio");
-        router.refresh();
-      }
+      const redirectTo = `${window.location.origin}/auth/callback?next=/studio`;
+      const { error: sendError } = await supabase.auth.signInWithOtp({
+        email,
+        options: { shouldCreateUser: true, emailRedirectTo: redirectTo },
+      });
+      if (sendError) throw sendError;
+      setSent(true);
     } catch (authError) {
       setError(authError instanceof Error ? authError.message : "登录失败");
     } finally {
@@ -55,43 +44,33 @@ export function LoginForm() {
         </div>
       )}
       {error && <div className="notice error">{error}</div>}
+      {sent && (
+        <div className="notice">
+          <strong style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 5 }}>
+            <CheckCircle2 size={15} /> 登录邮件已发送
+          </strong>
+          打开发送到 {email} 的邮件并点击登录按钮，即可回到工坊。
+        </div>
+      )}
       <div className="field">
-        <label htmlFor="email">{sent ? "已发送到" : "邮箱地址"}</label>
+        <label htmlFor="email">邮箱地址</label>
         <input
           id="email"
           type="email"
           autoComplete="email"
           required={Boolean(supabase)}
-          disabled={sent}
           placeholder="you@example.com"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
         />
       </div>
-      {sent && (
-        <div className="field">
-          <label htmlFor="token">6 位验证码</label>
-          <input
-            id="token"
-            inputMode="numeric"
-            autoComplete="one-time-code"
-            maxLength={8}
-            required
-            placeholder="123456"
-            value={token}
-            onChange={(event) => setToken(event.target.value.replace(/\D/g, ""))}
-          />
-        </div>
-      )}
       <button className="btn btn-primary" disabled={loading} type="submit">
         {loading ? (
           <LoaderCircle className="animate-spin" size={15} />
-        ) : sent ? (
-          <ArrowRight size={15} />
         ) : (
           <Mail size={15} />
         )}
-        {!supabase ? "进入演示工作区" : sent ? "验证并登录" : "发送登录验证码"}
+        {!supabase ? "进入演示工作区" : sent ? "重新发送登录邮件" : "发送登录邮件"}
       </button>
     </form>
   );

@@ -1,0 +1,25 @@
+project_id = "info-card-craft"
+
+[auth]
+enabled = true
+site_url = "https://info-card-craft.vercel.app"
+additional_redirect_urls = [
+  "https://info-card-craft.vercel.app/**",
+  "http://localhost:3000/**",
+  "http://127.0.0.1:3000/**"
+]
+enable_signup = true
+enable_anonymous_sign_ins = false
+jwt_expiry = 3600
+
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+
+[auth.email]
+enable_signup = true
+enable_confirmations = true
+double_confirm_changes = true
+max_frequency = "60s"
+otp_length = 8
+otp_expiry = 3600
