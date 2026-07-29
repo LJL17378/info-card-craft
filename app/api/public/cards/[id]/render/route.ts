@@ -24,6 +24,8 @@ function demoSnapshot(id: string): PublishedSnapshot | null {
         ? "github-user"
         : id === "demo-json"
           ? "custom-json"
+          : id === "demo-city-inspiration"
+            ? "city-inspiration"
           : null;
   if (!key) return null;
   return {

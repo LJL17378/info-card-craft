@@ -63,6 +63,17 @@ test("public demo render endpoint returns a normalized card", async ({ request }
   expect(payload.theme.direction).toBe("horizontal");
 });
 
+test("city inspiration demo accepts a Beijing embed input", async ({ request }) => {
+  const response = await request.get(
+    "/api/public/cards/demo-city-inspiration/render?input-city=%E5%8C%97%E4%BA%AC",
+  );
+  expect(response.ok()).toBeTruthy();
+  const payload = await response.json();
+  expect(payload.cardId).toBe("demo-city-inspiration");
+  expect(payload.data.identity.title).toContain("北京");
+  expect(payload.data.blocks.some((block: { type: string }) => block.type === "image")).toBe(true);
+});
+
 test("framework-free Web Component renders inside plain HTML", async ({ page }) => {
   await page.goto("/embed-test.html");
   const host = page.locator("info-card-craft");
