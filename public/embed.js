@@ -33,32 +33,37 @@ const styles = `
   .preset-inspiration {
     padding: 0; display: grid; grid-template-columns: minmax(0,1.25fr) minmax(205px,.75fr);
     grid-template-areas: "hero art" "stats art" "quote art" "source art" "links links";
-    grid-template-rows: auto auto 1fr auto auto; gap: 0; border-color: rgba(70,54,39,.12) !important;
-    background: #fffaf1; box-shadow: 0 24px 70px rgba(72,53,35,.18) !important;
+    grid-template-rows: auto auto 1fr auto auto; gap: min(5px,calc(var(--gap) * .25));
+    color: var(--text); border-color: color-mix(in srgb,var(--text) 12%,transparent) !important; background: var(--surface);
   }
   .preset-inspiration .block-hero {
-    grid-area: hero; min-height: auto; padding: 28px 28px 17px; align-items: center;
-    color: #29231f; border-radius: 0; background: transparent !important;
+    grid-area: hero; min-height: auto; padding: calc(var(--pad) * 1.35) calc(var(--pad) * 1.35) var(--pad); align-items: center;
+    color: var(--text); border-radius: 0; background: transparent !important;
   }
   .preset-inspiration .block-hero .craft-avatar-wrap { display: none; }
   .preset-inspiration .block-hero .craft-title {
     font-family: "Iowan Old Style","Songti SC",Georgia,serif; font-size: 32px; font-weight: 650; letter-spacing: -.055em;
   }
-  .preset-inspiration .block-hero .craft-badge { padding: 5px 9px; color: #fffaf1; border-radius: 999px; background: #e86e4b; font-size: 9px; }
-  .preset-inspiration .block-hero .craft-subtitle { margin-top: 7px; color: #7b6f65; opacity: 1; font-size: 10px; letter-spacing: .08em; }
-  .preset-inspiration .block-weather { grid-area: stats; padding: 0 24px 20px; grid-template-columns: repeat(2,minmax(0,1fr)) !important; gap: 7px; }
-  .preset-inspiration .block-weather .craft-stat { padding: 10px 11px; border-color: rgba(70,54,39,.08); border-radius: 10px; background: rgba(110,88,66,.045); }
-  .preset-inspiration .block-weather .craft-stat span { color: #8c7d71; opacity: 1; }
-  .preset-inspiration .block-weather .craft-stat strong { color: #322a24; font-family: ui-monospace,SFMono-Regular,Menlo,monospace; font-size: 13px; }
-  .preset-inspiration .block-quote { grid-area: quote; margin: 0 28px; padding: 17px 0 8px; border-top: 1px solid rgba(70,54,39,.12); }
-  .preset-inspiration .block-quote .craft-label { color: #e86e4b; }
-  .preset-inspiration .block-quote p { color: #3f342c; opacity: 1; font-family: "Iowan Old Style","Songti SC",Georgia,serif; font-size: 16px; line-height: 1.7; }
-  .preset-inspiration .block-source { grid-area: source; padding: 5px 28px 22px; }
+  .preset-inspiration .block-hero .craft-badge { padding: 5px 9px; color: var(--surface); border-radius: 999px; background: var(--accent); font-size: 9px; }
+  .preset-inspiration .block-hero .craft-subtitle { margin-top: 7px; color: color-mix(in srgb,var(--text) 62%,transparent); opacity: 1; font-size: 10px; letter-spacing: .08em; }
+  .preset-inspiration .block-weather { grid-area: stats; padding: 0 calc(var(--pad) * 1.2) var(--pad); grid-template-columns: repeat(2,minmax(0,1fr)) !important; gap: max(5px,calc(var(--gap) * .7)); }
+  .preset-inspiration .block-weather .craft-stat { padding: 10px 11px; border-color: color-mix(in srgb,var(--text) 9%,transparent); border-radius: calc(var(--radius) * .42); background: color-mix(in srgb,var(--text) 5%,transparent); }
+  .preset-inspiration .block-weather .craft-stat span { color: color-mix(in srgb,var(--text) 58%,transparent); opacity: 1; }
+  .preset-inspiration .block-weather .craft-stat strong { color: var(--text); font-family: ui-monospace,SFMono-Regular,Menlo,monospace; font-size: 13px; }
+  .preset-inspiration .block-quote { grid-area: quote; margin: 0 calc(var(--pad) * 1.35); padding: var(--pad) 0 calc(var(--pad) * .45); border-top: 1px solid color-mix(in srgb,var(--text) 12%,transparent); }
+  .preset-inspiration .block-quote .craft-label { color: var(--accent); }
+  .preset-inspiration .block-quote p { color: var(--text); opacity: 1; font-family: "Iowan Old Style","Songti SC",Georgia,serif; font-size: 16px; line-height: 1.7; }
+  .preset-inspiration .block-source { grid-area: source; padding: calc(var(--pad) * .25) calc(var(--pad) * 1.35) calc(var(--pad) * 1.1); }
   .preset-inspiration .block-source .craft-label { display: none; }
-  .preset-inspiration .block-source p { color: #9a8b80; opacity: 1; font-size: 9px; }
-  .preset-inspiration .block-art {
-    width: 100%; height: 100%; min-height: 390px; grid-area: art; align-self: stretch;
-    border-radius: 0; object-fit: cover; object-position: center 28%;
+  .preset-inspiration .block-source p { color: color-mix(in srgb,var(--text) 48%,transparent); opacity: 1; font-size: 9px; }
+  .preset-inspiration .craft-visual.block-art {
+    width: 100%; height: 100%; min-height: 390px; margin: 0; grid-area: art; align-self: stretch;
+    position: relative; overflow: hidden; border-radius: 0;
+    background: color-mix(in srgb,var(--accent) 10%,var(--surface));
+  }
+  .preset-inspiration .craft-visual.block-art .craft-image {
+    width: 100%; height: 100%; position: absolute; inset: 0; display: block;
+    aspect-ratio: auto !important; border-radius: 0; object-fit: cover !important; object-position: center 28%;
   }
   .preset-inspiration .block-artist {
     z-index: 1; grid-area: art; align-self: end; padding: 54px 18px 17px; color: white;
@@ -67,10 +72,17 @@ const styles = `
   .preset-inspiration .block-artist .craft-label { margin-bottom: 4px; color: rgba(255,255,255,.7); }
   .preset-inspiration .block-artist p { opacity: 1; font-size: 10px; }
   .preset-inspiration .block-links {
-    grid-area: links; padding: 10px; border-top: 1px solid rgba(70,54,39,.1); background: rgba(255,255,255,.38);
+    grid-area: links; padding: calc(var(--pad) * .55); border-top: 1px solid color-mix(in srgb,var(--text) 10%,transparent);
+    background: color-mix(in srgb,var(--surface) 74%,transparent);
   }
-  .preset-inspiration .block-links .craft-link { min-height: 35px; border-radius: 9px; background: #2f3e42; }
-  .preset-inspiration .block-links .craft-link.secondary { color: #54463c; border-color: rgba(70,54,39,.14); background: transparent; }
+  .preset-inspiration .block-links .craft-link { min-height: 35px; border-radius: calc(var(--radius) * .4); background: color-mix(in srgb,var(--text) 82%,var(--accent)); }
+  .preset-inspiration .block-links .craft-link.secondary { color: var(--text); border-color: color-mix(in srgb,var(--text) 14%,transparent); background: transparent; }
+  .preset-inspiration.direction-vertical {
+    grid-template-columns: 1fr;
+    grid-template-areas: "art" "hero" "stats" "quote" "source" "links";
+  }
+  .preset-inspiration.direction-vertical .craft-visual.block-art { min-height: 230px; max-height: 300px; }
+  .preset-inspiration.direction-vertical .block-artist { min-height: 230px; }
   .craft-hero {
     min-height: 112px; padding: var(--pad); border-radius: calc(var(--radius) * .72);
     display: flex; align-items: flex-end; gap: 13px; color: white;
@@ -241,14 +253,12 @@ const styles = `
     .leetcode-progress { grid-template-columns: 104px 1fr; gap: 12px; }
     .leetcode-ring { width: 98px; }
   }
-  @container (max-width: 540px) {
-    .preset-inspiration {
-      grid-template-columns: 1fr;
-      grid-template-areas: "art" "hero" "stats" "quote" "source" "links";
-    }
-    .preset-inspiration .block-art { min-height: 220px; max-height: 270px; }
-    .preset-inspiration .block-artist { min-height: 220px; }
+  .preset-inspiration.is-narrow {
+    grid-template-columns: 1fr;
+    grid-template-areas: "art" "hero" "stats" "quote" "source" "links";
   }
+  .preset-inspiration.is-narrow .craft-visual.block-art { height: 250px; min-height: 250px; max-height: 250px; }
+  .preset-inspiration.is-narrow .block-artist { min-height: 250px; }
   @media (max-width: 380px) { .craft-stats { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } }
   @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
 `;
@@ -356,7 +366,8 @@ class InfoCardCraft extends HTMLElement {
     root.replaceChildren();
     const style = element("style");
     style.textContent = styles;
-    const card = element("article", `craft-card card preset-${theme.preset} direction-${theme.direction}`);
+    const narrow = Number(theme.width || 560) < 540;
+    const card = element("article", `craft-card card preset-${theme.preset} direction-${theme.direction}${narrow ? " is-narrow" : ""}`);
     card.style.setProperty("--accent", theme.accent);
     card.style.setProperty("--surface", theme.surface);
     card.style.setProperty("--text", theme.text);
@@ -445,7 +456,14 @@ class InfoCardCraft extends HTMLElement {
         image.src = block.src;
         image.alt = block.alt || "";
         image.referrerPolicy = "no-referrer";
-        card.append(image);
+        if (theme.preset === "inspiration") {
+          image.className = "craft-image";
+          const visual = element("figure", `craft-block block-${block.id} craft-visual ratio-${block.ratio}`);
+          visual.append(image);
+          card.append(visual);
+        } else {
+          card.append(image);
+        }
       } else if (block.type === "links" && block.items.length) {
         const links = element("section", `craft-block block-${block.id} craft-links`);
         for (const item of block.items) {

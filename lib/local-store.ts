@@ -1,7 +1,7 @@
 "use client";
 
 import type { StoredCard, TemplateKey, WorkflowConfig } from "@/lib/card-schema";
-import { cloneTemplateConfig } from "@/lib/templates";
+import { cloneTemplateConfig, templates } from "@/lib/templates";
 
 const STORAGE_KEY = "info-card-craft:cards:v3";
 const CHANGE_EVENT = "info-card-craft:change";
@@ -116,7 +116,10 @@ export function listLocalCards(): StoredCard[] {
     return cards;
   }
   try {
-    const cards = (JSON.parse(raw) as StoredCard[]).map(migratePlatformPreset);
+    const supportedTemplates = new Set(templates.map((template) => template.key));
+    const cards = (JSON.parse(raw) as StoredCard[])
+      .filter((card) => supportedTemplates.has(card.template))
+      .map(migratePlatformPreset);
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
     return cards;
   } catch {
@@ -143,6 +146,12 @@ export function getLocalCard(id: string): StoredCard | undefined {
 }
 
 export function createLocalCard(template: TemplateKey): StoredCard {
+  const cards = listLocalCards();
+  const activeDraft = cards.find(
+    (card) => card.template === template && card.status === "draft",
+  );
+  if (activeDraft) return activeDraft;
+
   const config = cloneTemplateConfig(template);
   const timestamp = now();
   const card: StoredCard = {
@@ -156,7 +165,7 @@ export function createLocalCard(template: TemplateKey): StoredCard {
     createdAt: timestamp,
     updatedAt: timestamp,
   };
-  write([card, ...listLocalCards()]);
+  write([card, ...cards]);
   return card;
 }
 

@@ -133,6 +133,14 @@ function Block({ block, preset }: { block: ResolvedBlock; preset: CardTheme["pre
   }
   if (block.type === "image") {
     if (!block.src) return null;
+    if (preset === "inspiration") {
+      return (
+        <figure className={`craft-block block-${block.id} craft-visual ratio-${block.ratio}`}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="craft-image" src={block.src} alt={block.alt} referrerPolicy="no-referrer" />
+        </figure>
+      );
+    }
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img className={`craft-block block-${block.id} craft-image ratio-${block.ratio}`} src={block.src} alt={block.alt} referrerPolicy="no-referrer" />
@@ -165,11 +173,12 @@ export function CardPreview({
   const blocks = data.blocks.length ? data.blocks : LegacyBlocks(data);
   const density = theme.density === "compact" ? 14 : theme.density === "airy" ? 24 : 18;
   const width = compact ? Math.min(theme.width, 330) : theme.direction === "vertical" ? Math.min(theme.width, 380) : theme.width;
+  const narrow = width < 540;
 
   return (
     <article
       data-testid="card-preview"
-      className={`craft-card preset-${theme.preset} mode-${theme.mode} direction-${theme.direction}`}
+      className={`craft-card preset-${theme.preset} mode-${theme.mode} direction-${theme.direction}${narrow ? " is-narrow" : ""}`}
       style={{
         "--craft-accent": theme.accent,
         "--craft-surface": theme.surface,

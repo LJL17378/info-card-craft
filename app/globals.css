@@ -1822,18 +1822,18 @@ a {
     "source art"
     "links links";
   grid-template-rows: auto auto 1fr auto auto;
-  gap: 0;
-  border-color: rgba(70,54,39,.12) !important;
-  background: #fffaf1;
-  box-shadow: 0 24px 70px rgba(72,53,35,.18) !important;
+  gap: min(5px, calc(var(--craft-gap) * .25));
+  color: var(--craft-text);
+  border-color: color-mix(in srgb, var(--craft-text) 12%, transparent) !important;
+  background: var(--craft-surface);
 }
 
 .preset-inspiration .block-hero {
   grid-area: hero;
   min-height: auto;
-  padding: 28px 28px 17px;
+  padding: calc(var(--craft-pad) * 1.35) calc(var(--craft-pad) * 1.35) var(--craft-pad);
   align-items: center;
-  color: #29231f;
+  color: var(--craft-text);
   border-radius: 0;
   background: transparent !important;
 }
@@ -1851,15 +1851,15 @@ a {
 
 .preset-inspiration .block-hero .craft-badge {
   padding: 5px 9px;
-  color: #fffaf1;
+  color: var(--craft-surface);
   border-radius: 999px;
-  background: #e86e4b;
+  background: var(--craft-accent);
   font-size: 9px;
 }
 
 .preset-inspiration .block-hero p {
   margin-top: 7px;
-  color: #7b6f65;
+  color: color-mix(in srgb, var(--craft-text) 62%, transparent);
   opacity: 1;
   font-size: 10px;
   letter-spacing: .08em;
@@ -1867,42 +1867,42 @@ a {
 
 .preset-inspiration .block-weather {
   grid-area: stats;
-  padding: 0 24px 20px;
+  padding: 0 calc(var(--craft-pad) * 1.2) var(--craft-pad);
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  gap: 7px;
+  gap: max(5px, calc(var(--craft-gap) * .7));
 }
 
 .preset-inspiration .block-weather .craft-stat {
   padding: 10px 11px;
-  border-color: rgba(70,54,39,.08);
-  border-radius: 10px;
-  background: rgba(110,88,66,.045);
+  border-color: color-mix(in srgb, var(--craft-text) 9%, transparent);
+  border-radius: calc(var(--craft-radius) * .42);
+  background: color-mix(in srgb, var(--craft-text) 5%, transparent);
 }
 
 .preset-inspiration .block-weather .craft-stat span {
-  color: #8c7d71;
+  color: color-mix(in srgb, var(--craft-text) 58%, transparent);
   opacity: 1;
 }
 
 .preset-inspiration .block-weather .craft-stat strong {
-  color: #322a24;
+  color: var(--craft-text);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 13px;
 }
 
 .preset-inspiration .block-quote {
   grid-area: quote;
-  margin: 0 28px;
-  padding: 17px 0 8px;
-  border-top: 1px solid rgba(70,54,39,.12);
+  margin: 0 calc(var(--craft-pad) * 1.35);
+  padding: var(--craft-pad) 0 calc(var(--craft-pad) * .45);
+  border-top: 1px solid color-mix(in srgb, var(--craft-text) 12%, transparent);
 }
 
 .preset-inspiration .block-quote .craft-label {
-  color: #e86e4b;
+  color: var(--craft-accent);
 }
 
 .preset-inspiration .block-quote p {
-  color: #3f342c;
+  color: var(--craft-text);
   opacity: 1;
   font-family: "Iowan Old Style", "Songti SC", Georgia, serif;
   font-size: 16px;
@@ -1911,7 +1911,7 @@ a {
 
 .preset-inspiration .block-source {
   grid-area: source;
-  padding: 5px 28px 22px;
+  padding: calc(var(--craft-pad) * .25) calc(var(--craft-pad) * 1.35) calc(var(--craft-pad) * 1.1);
 }
 
 .preset-inspiration .block-source .craft-label {
@@ -1919,19 +1919,33 @@ a {
 }
 
 .preset-inspiration .block-source p {
-  color: #9a8b80;
+  color: color-mix(in srgb, var(--craft-text) 48%, transparent);
   opacity: 1;
   font-size: 9px;
 }
 
-.preset-inspiration .block-art {
+.preset-inspiration .craft-visual.block-art {
   width: 100%;
   height: 100%;
   min-height: 390px;
+  margin: 0;
   grid-area: art;
   align-self: stretch;
+  position: relative;
+  overflow: hidden;
   border-radius: 0;
-  object-fit: cover;
+  background: color-mix(in srgb, var(--craft-accent) 10%, var(--craft-surface));
+}
+
+.preset-inspiration .craft-visual.block-art .craft-image {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  display: block;
+  aspect-ratio: auto !important;
+  border-radius: 0;
+  object-fit: cover !important;
   object-position: center 28%;
 }
 
@@ -1957,21 +1971,41 @@ a {
 
 .preset-inspiration .block-links {
   grid-area: links;
-  padding: 10px;
-  border-top: 1px solid rgba(70,54,39,.1);
-  background: rgba(255,255,255,.38);
+  padding: calc(var(--craft-pad) * .55);
+  border-top: 1px solid color-mix(in srgb, var(--craft-text) 10%, transparent);
+  background: color-mix(in srgb, var(--craft-surface) 74%, transparent);
 }
 
 .preset-inspiration .block-links .craft-link {
   min-height: 35px;
-  border-radius: 9px;
-  background: #2f3e42;
+  border-radius: calc(var(--craft-radius) * .4);
+  background: color-mix(in srgb, var(--craft-text) 82%, var(--craft-accent));
 }
 
 .preset-inspiration .block-links .craft-link.secondary {
-  color: #54463c;
-  border-color: rgba(70,54,39,.14);
+  color: var(--craft-text);
+  border-color: color-mix(in srgb, var(--craft-text) 14%, transparent);
   background: transparent;
+}
+
+.craft-card.preset-inspiration.direction-vertical {
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "art"
+    "hero"
+    "stats"
+    "quote"
+    "source"
+    "links";
+}
+
+.preset-inspiration.direction-vertical .craft-visual.block-art {
+  min-height: 230px;
+  max-height: 300px;
+}
+
+.preset-inspiration.direction-vertical .block-artist {
+  min-height: 230px;
 }
 
 .craft-block {
@@ -2610,26 +2644,25 @@ a {
   background: #ffa116;
 }
 
-@container (max-width: 540px) {
-  .craft-card.preset-inspiration {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "art"
-      "hero"
-      "stats"
-      "quote"
-      "source"
-      "links";
-  }
+.craft-card.preset-inspiration.is-narrow {
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "art"
+    "hero"
+    "stats"
+    "quote"
+    "source"
+    "links";
+}
 
-  .preset-inspiration .block-art {
-    min-height: 220px;
-    max-height: 270px;
-  }
+.preset-inspiration.is-narrow .craft-visual.block-art {
+  height: 250px;
+  min-height: 250px;
+  max-height: 250px;
+}
 
-  .preset-inspiration .block-artist {
-    min-height: 220px;
-  }
+.preset-inspiration.is-narrow .block-artist {
+  min-height: 250px;
 }
 
 @media (max-width: 420px) {
