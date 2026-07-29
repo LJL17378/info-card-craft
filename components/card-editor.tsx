@@ -340,7 +340,11 @@ export function CardEditor({ cardId }: { cardId: string }) {
                 </div>
                 <div className="subsection-head"><div><strong>运行参数</strong><span>嵌入时通过 input-* 传入</span></div></div>
                 {config.inputs.map((input, index) => (
-                  <div className="config-card" key={`${input.key}-${index}`}>
+                  <div className="config-card parameter-card" key={`${input.key}-${index}`}>
+                    <div className="parameter-card-head">
+                      <span>PARAM {String(index + 1).padStart(2, "0")}</span>
+                      <strong>{input.label || `参数 ${index + 1}`}</strong>
+                    </div>
                     <div className="config-card-grid">
                       <div className="field"><label>参数标识</label><input value={input.key} onChange={(e) => patchInput(index, { key: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })} /></div>
                       <div className="field"><label>显示名称</label><input value={input.label} onChange={(e) => patchInput(index, { label: e.target.value })} /></div>
