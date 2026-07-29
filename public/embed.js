@@ -288,6 +288,7 @@ class InfoCardCraft extends HTMLElement {
     super();
     this.attachShadow({ mode: "open" });
     this._requestId = 0;
+    this._resizeObserver = new ResizeObserver(() => this.updateResponsiveLayout());
     this._observer = new MutationObserver((records) => {
       if (records.some(({ attributeName }) =>
         attributeName === "card-id" || attributeName === "version" || attributeName?.startsWith("input-")
@@ -297,11 +298,19 @@ class InfoCardCraft extends HTMLElement {
 
   connectedCallback() {
     this._observer.observe(this, { attributes: true });
+    this._resizeObserver.observe(this);
     this.load();
   }
 
   disconnectedCallback() {
     this._observer.disconnect();
+    this._resizeObserver.disconnect();
+  }
+
+  updateResponsiveLayout() {
+    const card = this.shadowRoot?.querySelector(".craft-card");
+    if (!card) return;
+    card.classList.toggle("is-narrow", this.getBoundingClientRect().width < 540);
   }
 
   inputs() {
@@ -366,7 +375,7 @@ class InfoCardCraft extends HTMLElement {
     root.replaceChildren();
     const style = element("style");
     style.textContent = styles;
-    const narrow = Number(theme.width || 560) < 540;
+    const narrow = this.getBoundingClientRect().width < 540;
     const card = element("article", `craft-card card preset-${theme.preset} direction-${theme.direction}${narrow ? " is-narrow" : ""}`);
     card.style.setProperty("--accent", theme.accent);
     card.style.setProperty("--surface", theme.surface);
@@ -480,6 +489,7 @@ class InfoCardCraft extends HTMLElement {
       }
     }
     root.append(style, card);
+    this.updateResponsiveLayout();
   }
 }
 

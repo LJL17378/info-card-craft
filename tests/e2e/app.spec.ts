@@ -74,6 +74,24 @@ test("city inspiration demo accepts a Beijing embed input", async ({ request }) 
   expect(payload.data.blocks.some((block: { type: string }) => block.type === "image")).toBe(true);
 });
 
+test("city inspiration embed adapts to a narrow host", async ({ page }) => {
+  await page.goto("/embed-test.html");
+  const host = page.locator("info-card-craft");
+  await host.evaluate((element) => {
+    const parent = element.parentElement;
+    if (parent) parent.style.width = "320px";
+    element.setAttribute("card-id", "demo-city-inspiration");
+    element.setAttribute("input-city", "北京");
+  });
+  await expect
+    .poll(() =>
+      host.evaluate((element) =>
+        element.shadowRoot?.querySelector(".craft-card")?.classList.contains("is-narrow"),
+      ),
+    )
+    .toBe(true);
+});
+
 test("framework-free Web Component renders inside plain HTML", async ({ page }) => {
   await page.goto("/embed-test.html");
   const host = page.locator("info-card-craft");
