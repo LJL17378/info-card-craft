@@ -25,18 +25,31 @@ test("creates a multi-source card and customizes its layout", async ({ page }) =
   await expect(page.locator(".code-window pre")).toContainText("<info-card-craft");
 });
 
-test("offers Nowcoder, Zhihu and LeetCode templates with live previews", async ({
+test("offers platform and multi-API inspiration templates with live previews", async ({
   page,
 }) => {
   await page.goto("/studio/new");
   await expect(page.getByRole("button", { name: /牛客档案/ })).toBeVisible();
   await expect(page.getByRole("button", { name: /知乎创作者/ })).toBeVisible();
-  await expect(page.getByRole("button", { name: /抖音主页/ })).toBeVisible();
-  await expect(page.getByRole("button", { name: /小红书主页/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /城市灵感/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /抖音主页/ })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /小红书主页/ })).toHaveCount(0);
   await page.getByRole("button", { name: /力扣进度/ }).click();
   await expect(page.getByText("LeetCode", { exact: true })).toBeVisible();
   await expect(page.getByText("已解决", { exact: true })).toBeVisible();
   await expect(page.locator(".leetcode-ring")).toBeVisible();
+});
+
+test("shows editable query parameters for the four-API city workflow", async ({ page }) => {
+  await page.goto("/studio/new");
+  await page.getByRole("button", { name: /城市灵感/ }).click();
+  await page.getByRole("button", { name: "2 数据源" }).click();
+  await expect(page.getByLabel("查询参数值 name")).toHaveValue("{{input.city}}");
+  await expect(page.getByLabel("查询参数值 latitude")).toHaveValue(
+    "{{requests.location.results.0.latitude}}",
+  );
+  await expect(page.getByText("4 PARAMS")).toHaveCount(2);
+  await expect(page.getByRole("button", { name: "运行全部数据源" })).toBeVisible();
 });
 
 test("public demo render endpoint returns a normalized card", async ({ request }) => {

@@ -1197,6 +1197,86 @@ a {
   font-size: 10px;
 }
 
+.query-editor {
+  margin: -1px 0 12px;
+  padding: 11px;
+  border: 1px solid rgba(31,32,36,.08);
+  border-radius: 12px;
+  background: rgba(247,245,240,.72);
+}
+
+.query-editor-head {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.query-editor-head > div {
+  display: grid;
+  gap: 2px;
+}
+
+.query-editor-head strong {
+  font-size: 10px;
+}
+
+.query-editor-head span {
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.query-editor-head code {
+  color: #8b819d;
+  font-size: 8px;
+}
+
+.query-row {
+  margin-top: 6px;
+  display: grid;
+  grid-template-columns: minmax(90px, .7fr) minmax(140px, 1.3fr) 30px;
+  gap: 6px;
+}
+
+.query-row input {
+  min-width: 0;
+  height: 34px;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: var(--ink);
+  background: rgba(255,255,255,.82);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 9px;
+  outline: none;
+}
+
+.query-row input:focus {
+  border-color: rgba(234,73,105,.62);
+  box-shadow: 0 0 0 3px rgba(255,107,132,.09);
+}
+
+.query-row button,
+.add-query {
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  background: rgba(255,255,255,.7);
+  cursor: pointer;
+}
+
+.add-query {
+  min-height: 32px;
+  margin-top: 7px;
+  padding: 0 10px;
+  gap: 5px;
+  border-style: dashed;
+  font-size: 8px;
+}
+
 .add-source {
   margin-top: 4px;
 }
@@ -1518,8 +1598,7 @@ a {
 .preset-swatch.nowcoder { background: linear-gradient(135deg, #00b578 0 24%, #f5fbf8 24%); }
 .preset-swatch.zhihu { background: linear-gradient(180deg, #1772f6 0 16%, #fff 16%); }
 .preset-swatch.leetcode { background: radial-gradient(circle at 38% 52%, #ffa116 0 19%, #1f1f1f 20%); }
-.preset-swatch.douyin { background: linear-gradient(135deg, #25f4ee 0 18%, #101014 18% 78%, #fe2c55 78%); }
-.preset-swatch.xiaohongshu { background: linear-gradient(135deg, #ff2442 0 18%, #fff 18%); }
+.preset-swatch.inspiration { background: linear-gradient(90deg, #fff6e9 0 60%, #577083 60%); }
 
 .slider-field {
   margin-bottom: 18px;
@@ -1712,6 +1791,7 @@ a {
   color: var(--craft-text);
   background: var(--craft-surface);
   border-radius: var(--craft-radius);
+  container-type: inline-size;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -1729,6 +1809,169 @@ a {
   background:
     radial-gradient(circle at 90% 0%, color-mix(in srgb, var(--craft-accent) 24%, transparent), transparent 42%),
     var(--craft-surface);
+}
+
+.craft-card.preset-inspiration {
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(205px, .75fr);
+  grid-template-areas:
+    "hero art"
+    "stats art"
+    "quote art"
+    "source art"
+    "links links";
+  grid-template-rows: auto auto 1fr auto auto;
+  gap: 0;
+  border-color: rgba(70,54,39,.12) !important;
+  background: #fffaf1;
+  box-shadow: 0 24px 70px rgba(72,53,35,.18) !important;
+}
+
+.preset-inspiration .block-hero {
+  grid-area: hero;
+  min-height: auto;
+  padding: 28px 28px 17px;
+  align-items: center;
+  color: #29231f;
+  border-radius: 0;
+  background: transparent !important;
+}
+
+.preset-inspiration .block-hero .craft-avatar-wrap {
+  display: none;
+}
+
+.preset-inspiration .block-hero h3 {
+  font-family: "Iowan Old Style", "Songti SC", Georgia, serif;
+  font-size: 32px;
+  font-weight: 650;
+  letter-spacing: -.055em;
+}
+
+.preset-inspiration .block-hero .craft-badge {
+  padding: 5px 9px;
+  color: #fffaf1;
+  border-radius: 999px;
+  background: #e86e4b;
+  font-size: 9px;
+}
+
+.preset-inspiration .block-hero p {
+  margin-top: 7px;
+  color: #7b6f65;
+  opacity: 1;
+  font-size: 10px;
+  letter-spacing: .08em;
+}
+
+.preset-inspiration .block-weather {
+  grid-area: stats;
+  padding: 0 24px 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 7px;
+}
+
+.preset-inspiration .block-weather .craft-stat {
+  padding: 10px 11px;
+  border-color: rgba(70,54,39,.08);
+  border-radius: 10px;
+  background: rgba(110,88,66,.045);
+}
+
+.preset-inspiration .block-weather .craft-stat span {
+  color: #8c7d71;
+  opacity: 1;
+}
+
+.preset-inspiration .block-weather .craft-stat strong {
+  color: #322a24;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+}
+
+.preset-inspiration .block-quote {
+  grid-area: quote;
+  margin: 0 28px;
+  padding: 17px 0 8px;
+  border-top: 1px solid rgba(70,54,39,.12);
+}
+
+.preset-inspiration .block-quote .craft-label {
+  color: #e86e4b;
+}
+
+.preset-inspiration .block-quote p {
+  color: #3f342c;
+  opacity: 1;
+  font-family: "Iowan Old Style", "Songti SC", Georgia, serif;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.preset-inspiration .block-source {
+  grid-area: source;
+  padding: 5px 28px 22px;
+}
+
+.preset-inspiration .block-source .craft-label {
+  display: none;
+}
+
+.preset-inspiration .block-source p {
+  color: #9a8b80;
+  opacity: 1;
+  font-size: 9px;
+}
+
+.preset-inspiration .block-art {
+  width: 100%;
+  height: 100%;
+  min-height: 390px;
+  grid-area: art;
+  align-self: stretch;
+  border-radius: 0;
+  object-fit: cover;
+  object-position: center 28%;
+}
+
+.preset-inspiration .block-artist {
+  z-index: 1;
+  grid-area: art;
+  align-self: end;
+  padding: 54px 18px 17px;
+  color: white;
+  background: linear-gradient(transparent, rgba(28,23,21,.72));
+  pointer-events: none;
+}
+
+.preset-inspiration .block-artist .craft-label {
+  margin-bottom: 4px;
+  color: rgba(255,255,255,.7);
+}
+
+.preset-inspiration .block-artist p {
+  opacity: 1;
+  font-size: 10px;
+}
+
+.preset-inspiration .block-links {
+  grid-area: links;
+  padding: 10px;
+  border-top: 1px solid rgba(70,54,39,.1);
+  background: rgba(255,255,255,.38);
+}
+
+.preset-inspiration .block-links .craft-link {
+  min-height: 35px;
+  border-radius: 9px;
+  background: #2f3e42;
+}
+
+.preset-inspiration .block-links .craft-link.secondary {
+  color: #54463c;
+  border-color: rgba(70,54,39,.14);
+  background: transparent;
 }
 
 .craft-block {
@@ -2367,197 +2610,26 @@ a {
   background: #ffa116;
 }
 
-.craft-card.preset-douyin {
-  position: relative;
-  isolation: isolate;
-  border-color: #29292f !important;
-  background:
-    radial-gradient(circle at 0% 100%, rgba(37,244,238,.1), transparent 32%),
-    radial-gradient(circle at 100% 0%, rgba(254,44,85,.11), transparent 34%),
-    #0f0f12;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
+@container (max-width: 540px) {
+  .craft-card.preset-inspiration {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "art"
+      "hero"
+      "stats"
+      "quote"
+      "source"
+      "links";
+  }
 
-.preset-douyin .craft-hero {
-  min-height: 118px;
-  padding: 20px;
-  align-items: center;
-  color: #f7f7f8;
-  border: 1px solid #29292f;
-  background:
-    linear-gradient(115deg, rgba(37,244,238,.09), transparent 40%, rgba(254,44,85,.1)),
-    #17171c !important;
-}
+  .preset-inspiration .block-art {
+    min-height: 220px;
+    max-height: 270px;
+  }
 
-.preset-douyin .craft-avatar-wrap,
-.preset-douyin .craft-avatar {
-  width: 70px;
-  height: 70px;
-}
-
-.preset-douyin .craft-avatar,
-.preset-douyin .craft-avatar-fallback {
-  border: 3px solid #101014;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #25f4ee 0 48%, #fe2c55 52%);
-  box-shadow: -3px 0 #25f4ee, 3px 0 #fe2c55;
-}
-
-.preset-douyin .craft-title-row h3 {
-  color: #fff;
-  font-size: 22px;
-}
-
-.preset-douyin .craft-badge {
-  color: #0d0d10;
-  border-radius: 999px;
-  background: #25f4ee;
-  box-shadow: 2px 2px 0 #fe2c55;
-}
-
-.preset-douyin .craft-identity p {
-  color: #a9a9b1;
-  opacity: 1;
-}
-
-.preset-douyin .craft-label {
-  color: #25f4ee;
-}
-
-.preset-douyin .craft-text p {
-  color: #d1d1d5;
-  opacity: .82;
-}
-
-.preset-douyin .craft-stats {
-  gap: 8px;
-}
-
-.preset-douyin .craft-stat {
-  padding: 13px;
-  border-color: #2b2b31;
-  border-radius: 10px;
-  background: #18181d;
-}
-
-.preset-douyin .craft-stat span {
-  color: #8d8d96;
-  opacity: 1;
-}
-
-.preset-douyin .craft-stat strong {
-  color: #fff;
-  font-size: 17px;
-}
-
-.preset-douyin .craft-stat:nth-child(2) strong {
-  color: #25f4ee;
-}
-
-.preset-douyin .craft-stat:nth-child(3) strong {
-  color: #ff5474;
-}
-
-.preset-douyin .craft-link {
-  min-height: 41px;
-  color: #fff;
-  border-radius: 9px;
-  background: linear-gradient(90deg, #14c9c3, #25f4ee 44%, #fe2c55 46%, #e9264c);
-}
-
-.craft-card.preset-xiaohongshu {
-  position: relative;
-  border-color: rgba(255,36,66,.13) !important;
-  background:
-    radial-gradient(circle at 100% 0%, rgba(255,36,66,.08), transparent 31%),
-    #fffdfd;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
-
-.craft-card.preset-xiaohongshu::before {
-  content: "REDNOTE";
-  position: absolute;
-  top: 15px;
-  right: 18px;
-  z-index: 2;
-  color: rgba(255,36,66,.18);
-  font-size: 9px;
-  font-weight: 900;
-  letter-spacing: .16em;
-}
-
-.preset-xiaohongshu .craft-hero {
-  min-height: 112px;
-  padding: 18px;
-  align-items: center;
-  color: #222;
-  border: 1px solid rgba(255,36,66,.1);
-  background: rgba(255,255,255,.76) !important;
-}
-
-.preset-xiaohongshu .craft-avatar-wrap,
-.preset-xiaohongshu .craft-avatar {
-  width: 68px;
-  height: 68px;
-}
-
-.preset-xiaohongshu .craft-avatar,
-.preset-xiaohongshu .craft-avatar-fallback {
-  border: 3px solid #fff;
-  border-radius: 50%;
-  background: linear-gradient(145deg, #ff8b9e, #ff2442);
-  box-shadow: 0 0 0 2px #ff2442, 0 8px 20px rgba(255,36,66,.12);
-}
-
-.preset-xiaohongshu .craft-title-row h3 {
-  color: #222;
-  font-size: 21px;
-}
-
-.preset-xiaohongshu .craft-badge {
-  color: #ff2442;
-  border: 1px solid rgba(255,36,66,.16);
-  border-radius: 999px;
-  background: #fff1f3;
-}
-
-.preset-xiaohongshu .craft-identity p {
-  color: #777;
-  opacity: 1;
-}
-
-.preset-xiaohongshu .craft-label {
-  color: #ff2442;
-}
-
-.preset-xiaohongshu .craft-stats {
-  gap: 0;
-  padding: 5px 4px;
-  border-block: 1px solid #f1eeee;
-}
-
-.preset-xiaohongshu .craft-stat {
-  padding: 10px 7px;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  text-align: center;
-}
-
-.preset-xiaohongshu .craft-stat strong {
-  color: #222;
-  font-size: 15px;
-}
-
-.preset-xiaohongshu .craft-stat span {
-  color: #999;
-  opacity: 1;
-}
-
-.preset-xiaohongshu .craft-link {
-  min-height: 40px;
-  border-radius: 999px;
-  background: #ff2442;
+  .preset-inspiration .block-artist {
+    min-height: 220px;
+  }
 }
 
 @media (max-width: 420px) {

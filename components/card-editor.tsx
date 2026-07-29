@@ -378,6 +378,55 @@ export function CardEditor({ cardId }: { cardId: string }) {
                           <div className="field"><label>标识</label><input disabled={request.type !== "http"} value={request.id} onChange={(e) => patchRequest(index, { id: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })} /></div>
                         </div>
                         <div className="field"><label>HTTPS GET URL</label><textarea disabled={request.type !== "http"} value={request.url} onChange={(e) => patchRequest(index, { url: e.target.value })} spellCheck={false} /></div>
+                        {request.type === "http" && (
+                          <div className="query-editor">
+                            <div className="query-editor-head">
+                              <div><strong>查询参数</strong><span>支持 input 与前序 requests 插值</span></div>
+                              <code>{Object.keys(request.query).length} PARAMS</code>
+                            </div>
+                            {Object.entries(request.query).map(([key, value], queryIndex) => (
+                              <div className="query-row" key={`${key}-${queryIndex}`}>
+                                <input
+                                  aria-label={`查询参数名称 ${queryIndex + 1}`}
+                                  value={key}
+                                  placeholder="参数名"
+                                  onChange={(event) => {
+                                    const entries = Object.entries(request.query);
+                                    entries[queryIndex] = [event.target.value, value];
+                                    patchRequest(index, { query: Object.fromEntries(entries) });
+                                  }}
+                                />
+                                <input
+                                  aria-label={`查询参数值 ${key || queryIndex + 1}`}
+                                  value={value}
+                                  placeholder="{{input.id}}"
+                                  onChange={(event) => patchRequest(index, {
+                                    query: { ...request.query, [key]: event.target.value },
+                                  })}
+                                />
+                                <button
+                                  aria-label={`删除查询参数 ${key || queryIndex + 1}`}
+                                  onClick={() => patchRequest(index, {
+                                    query: Object.fromEntries(Object.entries(request.query).filter((_, itemIndex) => itemIndex !== queryIndex)),
+                                  })}
+                                  type="button"
+                                ><Trash2 size={12} /></button>
+                              </div>
+                            ))}
+                            {Object.keys(request.query).length < 12 && (
+                              <button
+                                className="add-query"
+                                onClick={() => {
+                                  let key = "param";
+                                  let suffix = 1;
+                                  while (key in request.query) key = `param-${suffix++}`;
+                                  patchRequest(index, { query: { ...request.query, [key]: "" } });
+                                }}
+                                type="button"
+                              ><Plus size={12} /> 添加查询参数</button>
+                            )}
+                          </div>
+                        )}
                         <div className="field"><label>失败策略</label><select value={request.failureMode} onChange={(e) => patchRequest(index, { failureMode: e.target.value as RequestConfig["failureMode"] })}><option value="abort">停止整个工作流</option><option value="continue">保留错误并继续</option></select></div>
                       </div>
                     </div>
@@ -501,8 +550,7 @@ export function CardEditor({ cardId }: { cardId: string }) {
                     ["nowcoder", "牛客"],
                     ["zhihu", "知乎"],
                     ["leetcode", "力扣"],
-                    ["douyin", "抖音"],
-                    ["xiaohongshu", "小红书"],
+                    ["inspiration", "城市日报"],
                   ] as const).map(([preset, label]) => <button className={config.theme.preset === preset ? "active" : ""} key={preset} onClick={() => patch({ theme: { ...config.theme, preset } })} type="button"><i className={`preset-swatch ${preset}`} /><strong>{label}</strong></button>)}
                 </div></div>
                 <div className="field-row">

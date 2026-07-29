@@ -21,7 +21,7 @@ const styles = `
   .craft-card {
     width: 100%; padding: var(--gap); display: flex; flex-direction: column; gap: var(--gap);
     overflow: hidden; color: var(--text); background: var(--surface);
-    border: var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
+    border: var(--border); border-radius: var(--radius); box-shadow: var(--shadow); container-type: inline-size;
   }
   .preset-glass {
     background: linear-gradient(135deg, color-mix(in srgb, var(--surface) 92%, transparent), color-mix(in srgb, var(--accent) 18%, var(--surface)));
@@ -30,6 +30,47 @@ const styles = `
   .preset-poster {
     background: radial-gradient(circle at 90% 0%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 42%), var(--surface);
   }
+  .preset-inspiration {
+    padding: 0; display: grid; grid-template-columns: minmax(0,1.25fr) minmax(205px,.75fr);
+    grid-template-areas: "hero art" "stats art" "quote art" "source art" "links links";
+    grid-template-rows: auto auto 1fr auto auto; gap: 0; border-color: rgba(70,54,39,.12) !important;
+    background: #fffaf1; box-shadow: 0 24px 70px rgba(72,53,35,.18) !important;
+  }
+  .preset-inspiration .block-hero {
+    grid-area: hero; min-height: auto; padding: 28px 28px 17px; align-items: center;
+    color: #29231f; border-radius: 0; background: transparent !important;
+  }
+  .preset-inspiration .block-hero .craft-avatar-wrap { display: none; }
+  .preset-inspiration .block-hero .craft-title {
+    font-family: "Iowan Old Style","Songti SC",Georgia,serif; font-size: 32px; font-weight: 650; letter-spacing: -.055em;
+  }
+  .preset-inspiration .block-hero .craft-badge { padding: 5px 9px; color: #fffaf1; border-radius: 999px; background: #e86e4b; font-size: 9px; }
+  .preset-inspiration .block-hero .craft-subtitle { margin-top: 7px; color: #7b6f65; opacity: 1; font-size: 10px; letter-spacing: .08em; }
+  .preset-inspiration .block-weather { grid-area: stats; padding: 0 24px 20px; grid-template-columns: repeat(2,minmax(0,1fr)) !important; gap: 7px; }
+  .preset-inspiration .block-weather .craft-stat { padding: 10px 11px; border-color: rgba(70,54,39,.08); border-radius: 10px; background: rgba(110,88,66,.045); }
+  .preset-inspiration .block-weather .craft-stat span { color: #8c7d71; opacity: 1; }
+  .preset-inspiration .block-weather .craft-stat strong { color: #322a24; font-family: ui-monospace,SFMono-Regular,Menlo,monospace; font-size: 13px; }
+  .preset-inspiration .block-quote { grid-area: quote; margin: 0 28px; padding: 17px 0 8px; border-top: 1px solid rgba(70,54,39,.12); }
+  .preset-inspiration .block-quote .craft-label { color: #e86e4b; }
+  .preset-inspiration .block-quote p { color: #3f342c; opacity: 1; font-family: "Iowan Old Style","Songti SC",Georgia,serif; font-size: 16px; line-height: 1.7; }
+  .preset-inspiration .block-source { grid-area: source; padding: 5px 28px 22px; }
+  .preset-inspiration .block-source .craft-label { display: none; }
+  .preset-inspiration .block-source p { color: #9a8b80; opacity: 1; font-size: 9px; }
+  .preset-inspiration .block-art {
+    width: 100%; height: 100%; min-height: 390px; grid-area: art; align-self: stretch;
+    border-radius: 0; object-fit: cover; object-position: center 28%;
+  }
+  .preset-inspiration .block-artist {
+    z-index: 1; grid-area: art; align-self: end; padding: 54px 18px 17px; color: white;
+    background: linear-gradient(transparent,rgba(28,23,21,.72)); pointer-events: none;
+  }
+  .preset-inspiration .block-artist .craft-label { margin-bottom: 4px; color: rgba(255,255,255,.7); }
+  .preset-inspiration .block-artist p { opacity: 1; font-size: 10px; }
+  .preset-inspiration .block-links {
+    grid-area: links; padding: 10px; border-top: 1px solid rgba(70,54,39,.1); background: rgba(255,255,255,.38);
+  }
+  .preset-inspiration .block-links .craft-link { min-height: 35px; border-radius: 9px; background: #2f3e42; }
+  .preset-inspiration .block-links .craft-link.secondary { color: #54463c; border-color: rgba(70,54,39,.14); background: transparent; }
   .craft-hero {
     min-height: 112px; padding: var(--pad); border-radius: calc(var(--radius) * .72);
     display: flex; align-items: flex-end; gap: 13px; color: white;
@@ -196,59 +237,17 @@ const styles = `
   .leetcode-legend strong { color: #e8e8e8; font-size: 14px; }
   .preset-leetcode .craft-label { color: #ffa116; }
   .preset-leetcode .craft-link { color: #171717; border-radius: 8px; background: #ffa116; }
-  .preset-douyin {
-    position: relative; isolation: isolate; border-color: #29292f !important;
-    background: radial-gradient(circle at 0% 100%,rgba(37,244,238,.1),transparent 32%),radial-gradient(circle at 100% 0%,rgba(254,44,85,.11),transparent 34%),#0f0f12;
-    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  }
-  .preset-douyin .craft-hero {
-    min-height: 118px; padding: 20px; align-items: center; color: #f7f7f8; border: 1px solid #29292f;
-    background: linear-gradient(115deg,rgba(37,244,238,.09),transparent 40%,rgba(254,44,85,.1)),#17171c !important;
-  }
-  .preset-douyin .craft-avatar-wrap, .preset-douyin .craft-avatar { width: 70px; height: 70px; }
-  .preset-douyin .craft-avatar, .preset-douyin .craft-avatar-fallback {
-    border: 3px solid #101014; border-radius: 50%; background: linear-gradient(135deg,#25f4ee 0 48%,#fe2c55 52%);
-    box-shadow: -3px 0 #25f4ee,3px 0 #fe2c55;
-  }
-  .preset-douyin .craft-title { color: #fff; font-size: 22px; }
-  .preset-douyin .craft-badge { color: #0d0d10; border-radius: 999px; background: #25f4ee; box-shadow: 2px 2px 0 #fe2c55; }
-  .preset-douyin .craft-subtitle { color: #a9a9b1; opacity: 1; }
-  .preset-douyin .craft-label { color: #25f4ee; }
-  .preset-douyin .craft-text p { color: #d1d1d5; opacity: .82; }
-  .preset-douyin .craft-stats { gap: 8px; }
-  .preset-douyin .craft-stat { padding: 13px; border-color: #2b2b31; border-radius: 10px; background: #18181d; }
-  .preset-douyin .craft-stat span { color: #8d8d96; opacity: 1; }
-  .preset-douyin .craft-stat strong { color: #fff; font-size: 17px; }
-  .preset-douyin .craft-stat:nth-child(2) strong { color: #25f4ee; }
-  .preset-douyin .craft-stat:nth-child(3) strong { color: #ff5474; }
-  .preset-douyin .craft-link { min-height: 41px; color: #fff; border-radius: 9px; background: linear-gradient(90deg,#14c9c3,#25f4ee 44%,#fe2c55 46%,#e9264c); }
-  .preset-xiaohongshu {
-    position: relative; border-color: rgba(255,36,66,.13) !important;
-    background: radial-gradient(circle at 100% 0%,rgba(255,36,66,.08),transparent 31%),#fffdfd;
-    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  }
-  .preset-xiaohongshu::before {
-    content: "REDNOTE"; position: absolute; top: 15px; right: 18px; z-index: 2;
-    color: rgba(255,36,66,.18); font-size: 9px; font-weight: 900; letter-spacing: .16em;
-  }
-  .preset-xiaohongshu .craft-hero { min-height: 112px; padding: 18px; align-items: center; color: #222; border: 1px solid rgba(255,36,66,.1); background: rgba(255,255,255,.76) !important; }
-  .preset-xiaohongshu .craft-avatar-wrap, .preset-xiaohongshu .craft-avatar { width: 68px; height: 68px; }
-  .preset-xiaohongshu .craft-avatar, .preset-xiaohongshu .craft-avatar-fallback {
-    border: 3px solid #fff; border-radius: 50%; background: linear-gradient(145deg,#ff8b9e,#ff2442);
-    box-shadow: 0 0 0 2px #ff2442,0 8px 20px rgba(255,36,66,.12);
-  }
-  .preset-xiaohongshu .craft-title { color: #222; font-size: 21px; }
-  .preset-xiaohongshu .craft-badge { color: #ff2442; border: 1px solid rgba(255,36,66,.16); border-radius: 999px; background: #fff1f3; }
-  .preset-xiaohongshu .craft-subtitle { color: #777; opacity: 1; }
-  .preset-xiaohongshu .craft-label { color: #ff2442; }
-  .preset-xiaohongshu .craft-stats { gap: 0; padding: 5px 4px; border-block: 1px solid #f1eeee; }
-  .preset-xiaohongshu .craft-stat { padding: 10px 7px; border: 0; border-radius: 0; background: transparent; text-align: center; }
-  .preset-xiaohongshu .craft-stat strong { color: #222; font-size: 15px; }
-  .preset-xiaohongshu .craft-stat span { color: #999; opacity: 1; }
-  .preset-xiaohongshu .craft-link { min-height: 40px; border-radius: 999px; background: #ff2442; }
   @media (max-width: 420px) {
     .leetcode-progress { grid-template-columns: 104px 1fr; gap: 12px; }
     .leetcode-ring { width: 98px; }
+  }
+  @container (max-width: 540px) {
+    .preset-inspiration {
+      grid-template-columns: 1fr;
+      grid-template-areas: "art" "hero" "stats" "quote" "source" "links";
+    }
+    .preset-inspiration .block-art { min-height: 220px; max-height: 270px; }
+    .preset-inspiration .block-artist { min-height: 220px; }
   }
   @media (max-width: 380px) { .craft-stats { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } }
   @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
@@ -370,7 +369,7 @@ class InfoCardCraft extends HTMLElement {
     const blocks = data.blocks?.length ? data.blocks : legacyBlocks(data);
     for (const block of blocks) {
       if (block.type === "hero") {
-        const hero = element("section", `craft-hero align-${block.align || "left"}`);
+        const hero = element("section", `craft-block block-${block.id} craft-hero align-${block.align || "left"}`);
         if (block.background) {
           hero.style.backgroundImage = theme.preset === "bilibili"
             ? `url("${block.background}")`
@@ -405,7 +404,7 @@ class InfoCardCraft extends HTMLElement {
         hero.append(identity);
         card.append(hero);
       } else if (block.type === "text" && block.content) {
-        const section = element("section", "craft-text");
+        const section = element("section", `craft-block block-${block.id} craft-text`);
         if (block.label) section.append(element("span", "craft-label", block.label));
         section.append(element("p", "", block.content));
         card.append(section);
@@ -416,7 +415,7 @@ class InfoCardCraft extends HTMLElement {
           const distributionTotal = distribution.reduce((sum, value) => sum + value, 0) || 1;
           const easyEnd = distribution[0] / distributionTotal * 100;
           const mediumEnd = easyEnd + distribution[1] / distributionTotal * 100;
-          const progress = element("section", "leetcode-progress");
+          const progress = element("section", `craft-block block-${block.id} leetcode-progress`);
           progress.setAttribute("aria-label", "力扣解题难度分布");
           const ring = element("div", "leetcode-ring");
           ring.style.background = `conic-gradient(from -45deg,#00b8a3 0 ${easyEnd}%,#ffc01e ${easyEnd}% ${mediumEnd}%,#ef4743 ${mediumEnd}% 100%)`;
@@ -432,7 +431,7 @@ class InfoCardCraft extends HTMLElement {
           progress.append(ring, legend);
           card.append(progress);
         } else {
-          const stats = element("section", "craft-stats");
+          const stats = element("section", `craft-block block-${block.id} craft-stats`);
           stats.style.gridTemplateColumns = `repeat(${block.columns}, minmax(0, 1fr))`;
           for (const item of block.items) {
             const stat = element("div", "craft-stat");
@@ -442,13 +441,13 @@ class InfoCardCraft extends HTMLElement {
           card.append(stats);
         }
       } else if (block.type === "image" && block.src) {
-        const image = element("img", `craft-image ratio-${block.ratio}`);
+        const image = element("img", `craft-block block-${block.id} craft-image ratio-${block.ratio}`);
         image.src = block.src;
         image.alt = block.alt || "";
         image.referrerPolicy = "no-referrer";
         card.append(image);
       } else if (block.type === "links" && block.items.length) {
-        const links = element("section", "craft-links");
+        const links = element("section", `craft-block block-${block.id} craft-links`);
         for (const item of block.items) {
           const link = element("a", `craft-link ${item.style}`, item.label);
           link.href = item.url;
@@ -459,7 +458,7 @@ class InfoCardCraft extends HTMLElement {
         }
         card.append(links);
       } else if (block.type === "divider") {
-        card.append(element("hr", "craft-divider"));
+        card.append(element("hr", `craft-block block-${block.id} craft-divider`));
       }
     }
     root.append(style, card);

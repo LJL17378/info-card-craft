@@ -67,21 +67,35 @@ describe("multi-source workflow", () => {
     });
   });
 
-  it("builds a social profile from embed inputs without making a network request", async () => {
-    const config = structuredClone(getTemplate("douyin-profile").config);
-    const result = await executeWorkflow(config, {
-      name: "Video Maker",
-      handle: "video-maker",
-      followers: 12000,
-      likes: 88000,
-      "profile-url": "https://www.douyin.com/user/example",
-    });
+  it("composes geocoding, dependent weather, a quote and an illustration", async () => {
+    mocks.safeFetchJson
+      .mockResolvedValueOnce({
+        results: [{ name: "上海", latitude: 31.22222, longitude: 121.45806, country: "中国" }],
+      })
+      .mockResolvedValueOnce({
+        current_units: { temperature_2m: "°C", wind_speed_10m: "km/h" },
+        current: { temperature_2m: 29.9, apparent_temperature: 36.2, relative_humidity_2m: 76, wind_speed_10m: 6 },
+      })
+      .mockResolvedValueOnce({ hitokoto: "不负韶华，不忘初心。", from: "Jane", uuid: "quote-id" })
+      .mockResolvedValueOnce({
+        results: [{ artist_name: "Artist", source_url: "https://example.com/art", url: "https://example.com/art.png" }],
+      });
 
-    expect(mocks.safeFetchJson).not.toHaveBeenCalled();
-    expect(result.data.identity.title).toBe("Video Maker");
-    expect(result.data.blocks.find((block) => block.type === "stats")).toMatchObject({
-      type: "stats",
-      items: expect.arrayContaining([{ label: "粉丝", value: "1.2万" }]),
-    });
+    const config = structuredClone(getTemplate("city-inspiration").config);
+    const result = await executeWorkflow(config, { city: "上海" });
+
+    expect(mocks.safeFetchJson).toHaveBeenNthCalledWith(
+      2,
+      expect.stringContaining("latitude=31.22222"),
+    );
+    expect(mocks.safeFetchJson).toHaveBeenNthCalledWith(
+      2,
+      expect.stringContaining("longitude=121.45806"),
+    );
+    expect(result.data.identity.title).toBe("上海");
+    expect(result.data.blocks).toEqual(expect.arrayContaining([
+      expect.objectContaining({ type: "image", src: "https://example.com/art.png" }),
+      expect.objectContaining({ type: "text", content: "不负韶华，不忘初心。" }),
+    ]));
   });
 });

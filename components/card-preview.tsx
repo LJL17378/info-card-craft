@@ -59,7 +59,7 @@ function Block({ block, preset }: { block: ResolvedBlock; preset: CardTheme["pre
       : block.avatar;
     return (
       <section
-        className={`craft-block craft-hero align-${block.align}`}
+        className={`craft-block block-${block.id} craft-hero align-${block.align}`}
         style={block.background ? {
           backgroundImage: preset === "bilibili"
             ? `url("${block.background}")`
@@ -89,7 +89,7 @@ function Block({ block, preset }: { block: ResolvedBlock; preset: CardTheme["pre
   if (block.type === "text") {
     if (!block.content) return null;
     return (
-      <section className="craft-block craft-text">
+      <section className={`craft-block block-${block.id} craft-text`}>
         {block.label && <span className="craft-label">{block.label}</span>}
         <p>{block.content}</p>
       </section>
@@ -105,7 +105,7 @@ function Block({ block, preset }: { block: ResolvedBlock; preset: CardTheme["pre
       const mediumEnd = easyEnd + (distribution[1] / distributionTotal) * 100;
       const ring = `conic-gradient(from -45deg, #00b8a3 0 ${easyEnd}%, #ffc01e ${easyEnd}% ${mediumEnd}%, #ef4743 ${mediumEnd}% 100%)`;
       return (
-        <section className="craft-block leetcode-progress" aria-label="力扣解题难度分布">
+        <section className={`craft-block block-${block.id} leetcode-progress`} aria-label="力扣解题难度分布">
           <div className="leetcode-ring" style={{ background: ring }}>
             <div><strong>{solved}</strong><span>已解决</span></div>
           </div>
@@ -122,7 +122,7 @@ function Block({ block, preset }: { block: ResolvedBlock; preset: CardTheme["pre
       );
     }
     return (
-      <section className="craft-block craft-stats" style={{ gridTemplateColumns: `repeat(${block.columns}, minmax(0, 1fr))` }}>
+      <section className={`craft-block block-${block.id} craft-stats`} style={{ gridTemplateColumns: `repeat(${block.columns}, minmax(0, 1fr))` }}>
         {block.items.map((item, index) => (
           <div className="craft-stat" key={`${item.label}-${index}`}>
             <span>{item.label}</span><strong>{item.value || "—"}</strong>
@@ -135,13 +135,13 @@ function Block({ block, preset }: { block: ResolvedBlock; preset: CardTheme["pre
     if (!block.src) return null;
     return (
       // eslint-disable-next-line @next/next/no-img-element
-      <img className={`craft-block craft-image ratio-${block.ratio}`} src={block.src} alt={block.alt} referrerPolicy="no-referrer" />
+      <img className={`craft-block block-${block.id} craft-image ratio-${block.ratio}`} src={block.src} alt={block.alt} referrerPolicy="no-referrer" />
     );
   }
   if (block.type === "links") {
     if (!block.items.length) return null;
     return (
-      <section className="craft-block craft-links">
+      <section className={`craft-block block-${block.id} craft-links`}>
         {block.items.map((item, index) => (
           <a className={`craft-link ${item.style}`} href={item.url} target="_blank" rel="noreferrer" key={`${item.label}-${index}`}>
             {item.label}<span>↗</span>
@@ -150,7 +150,7 @@ function Block({ block, preset }: { block: ResolvedBlock; preset: CardTheme["pre
       </section>
     );
   }
-  return <hr className="craft-block craft-divider" />;
+  return <hr className={`craft-block block-${block.id} craft-divider`} />;
 }
 
 export function CardPreview({

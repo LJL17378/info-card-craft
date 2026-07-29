@@ -136,37 +136,40 @@ export function getSampleResponse(template: TemplateKey): unknown {
       },
     };
   }
-  if (template === "douyin-profile") {
+  if (template === "city-inspiration") {
     return {
-      input: {},
+      input: { city: "上海" },
       requests: {
-        profile: {
-          name: "镜头里的日常",
-          handle: "daily.frames",
-          avatar: "",
-          bio: "记录生活，也记录闪光时刻。",
-          following: 128,
-          followers: 24000,
-          likes: 318000,
-          url: "https://www.douyin.com/",
+        location: {
+          results: [{
+            name: "上海",
+            admin1: "上海市",
+            country: "中国",
+            latitude: 31.22222,
+            longitude: 121.45806,
+          }],
         },
-      },
-    };
-  }
-  if (template === "xiaohongshu-profile") {
-    return {
-      input: {},
-      requests: {
-        profile: {
-          name: "周末生活研究所",
-          "red-id": "weekend.lab",
-          avatar: "",
-          bio: "咖啡、旅行和一些让生活变好的小事。",
-          following: 86,
-          followers: 12800,
-          engagement: 96000,
-          notes: 72,
-          url: "https://www.xiaohongshu.com/",
+        weather: {
+          current_units: { temperature_2m: "°C", wind_speed_10m: "km/h" },
+          current: {
+            temperature_2m: 29.9,
+            apparent_temperature: 36.2,
+            relative_humidity_2m: 76,
+            wind_speed_10m: 6,
+          },
+        },
+        quote: {
+          hitokoto: "不负韶华，不忘初心。",
+          from: "Jane",
+          uuid: "f53d53a0-bea1-499c-87cb-eab2ad8ba371",
+        },
+        art: {
+          results: [{
+            artist_name: "甘城なつき",
+            artist_href: "https://www.pixiv.net/en/users/3036679",
+            source_url: "https://www.pixiv.net/en/artworks/73891141",
+            url: "https://nekos.best/api/v2/neko/a04f0358-0f83-458f-a02b-90f00a18255b.png",
+          }],
         },
       },
     };

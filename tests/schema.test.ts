@@ -13,8 +13,7 @@ describe("workflow schema", () => {
       "nowcoder-user",
       "zhihu-user",
       "leetcode-user",
-      "douyin-profile",
-      "xiaohongshu-profile",
+      "city-inspiration",
     ] as const) {
       expect(workflowConfigSchema.safeParse(getTemplate(key).config).success).toBe(true);
     }
