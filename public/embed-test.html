@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Info Card Craft Embed Test</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        min-height: 100vh;
+        margin: 0;
+        padding: 48px 20px;
+        display: grid;
+        place-items: center;
+        background: #e9e7e1;
+        font-family: system-ui, sans-serif;
+      }
+      main { width: min(720px, 100%); }
+      h1 { margin: 0 0 18px; font-size: 18px; }
+    </style>
+    <script type="module" src="/embed.js"></script>
+  </head>
+  <body>
+    <main>
+      <h1>普通 HTML 嵌入测试</h1>
+      <info-card-craft
+        card-id="demo-github"
+        input-username="torvalds">
+      </info-card-craft>
+    </main>
+  </body>
+</html>
