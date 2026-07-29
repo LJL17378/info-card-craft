@@ -24,23 +24,30 @@ describe("field mapping", () => {
 
   it("maps a GitHub response into the normalized card model", () => {
     const config = getTemplate("github-user").config;
-    const result = mapToCardData(
-      {
-        name: "Octo Cat",
-        login: "octocat",
-        avatar_url: "https://example.com/avatar.png",
-        html_url: "https://github.com/octocat",
-        type: "User",
-        bio: "Hello",
-        public_repos: 12,
-        followers: 3456,
-        following: 7,
+    const result = mapToCardData({
+      input: { username: "octocat" },
+      requests: {
+        profile: {
+          name: "Octo Cat",
+          login: "octocat",
+          avatar_url: "https://example.com/avatar.png",
+          html_url: "https://github.com/octocat",
+          type: "User",
+          bio: "Hello",
+          public_repos: 12,
+          followers: 3456,
+          following: 7,
+        },
+        repos: [{ full_name: "octocat/hello", html_url: "https://github.com/octocat/hello" }],
       },
-      config,
-    );
+    }, config);
     expect(result.identity.title).toBe("Octo Cat");
     expect(result.identity.subtitle).toBe("@octocat");
-    expect(result.stats[0]).toEqual({ label: "仓库", value: "12" });
+    const statBlock = result.blocks.find((block) => block.type === "stats");
+    expect(statBlock?.type === "stats" && statBlock.items[0]).toEqual({
+      label: "仓库",
+      value: "12",
+    });
     expect(result.actions.url).toBe("https://github.com/octocat");
   });
 

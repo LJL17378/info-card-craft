@@ -2,6 +2,7 @@ import type {
   CardData,
   FieldBinding,
   Formatter,
+  ResolvedBlock,
   WorkflowConfig,
 } from "@/lib/card-schema";
 
@@ -48,6 +49,10 @@ export function applyFormatter(value: unknown, formatter: Formatter): unknown {
       return `${value ?? ""}${formatter.value ?? ""}`;
     case "join":
       return Array.isArray(value) ? value.join(String(formatter.value ?? "、")) : value;
+    case "uppercase":
+      return String(value ?? "").toUpperCase();
+    case "lowercase":
+      return String(value ?? "").toLowerCase();
   }
 }
 
@@ -57,9 +62,7 @@ export function resolveBinding(source: unknown, binding?: FieldBinding): string 
   if (value === undefined || value === null || value === "") {
     value = binding.fallback ?? "";
   }
-  for (const formatter of binding.formatters) {
-    value = applyFormatter(value, formatter);
-  }
+  for (const formatter of binding.formatters) value = applyFormatter(value, formatter);
   if (value === undefined || value === null) return "";
   if (typeof value === "object") return JSON.stringify(value);
   return String(value);
@@ -76,10 +79,67 @@ function safeLink(value: string): string {
   }
 }
 
-export function mapToCardData(
-  source: unknown,
-  config: WorkflowConfig,
-): CardData {
+function resolveBlocks(source: unknown, config: WorkflowConfig): ResolvedBlock[] {
+  return (config.layout?.blocks ?? [])
+    .filter((block) => !block.hidden)
+    .map((block): ResolvedBlock => {
+      if (block.type === "hero") {
+        return {
+          id: block.id,
+          type: "hero",
+          avatar: safeLink(resolveBinding(source, block.avatar)),
+          avatarFrame: safeLink(resolveBinding(source, block.avatarFrame)),
+          title: resolveBinding(source, block.title) || config.name,
+          subtitle: resolveBinding(source, block.subtitle),
+          badge: resolveBinding(source, block.badge),
+          background: safeLink(resolveBinding(source, block.background)),
+          align: block.align,
+        };
+      }
+      if (block.type === "text") {
+        return {
+          id: block.id,
+          type: "text",
+          label: block.label,
+          content: resolveBinding(source, block.content),
+        };
+      }
+      if (block.type === "stats") {
+        return {
+          id: block.id,
+          type: "stats",
+          columns: block.columns,
+          items: block.items.map((item) => ({
+            label: item.label,
+            value: resolveBinding(source, item.value),
+          })),
+        };
+      }
+      if (block.type === "image") {
+        return {
+          id: block.id,
+          type: "image",
+          src: safeLink(resolveBinding(source, block.src)),
+          alt: block.alt,
+          ratio: block.ratio,
+        };
+      }
+      if (block.type === "links") {
+        return {
+          id: block.id,
+          type: "links",
+          items: block.items.map((item) => ({
+            label: item.label,
+            url: safeLink(resolveBinding(source, item.url)),
+            style: item.style,
+          })).filter((item) => item.url),
+        };
+      }
+      return { id: block.id, type: "divider" };
+    });
+}
+
+export function mapToCardData(source: unknown, config: WorkflowConfig): CardData {
   const { mapping } = config;
   return {
     identity: {
@@ -100,16 +160,25 @@ export function mapToCardData(
       label: "查看详情",
       url: safeLink(resolveBinding(source, mapping.url)),
     },
+    blocks: resolveBlocks(source, config),
   };
 }
 
 export function interpolate(
   template: string,
-  inputs: Record<string, string | number | boolean>,
+  values: Record<string, string | number | boolean>,
 ): string {
   return template.replace(/\{\{([a-z][a-z0-9-]*)\}\}/g, (_, key: string) =>
-    encodeURIComponent(String(inputs[key] ?? "")),
+    encodeURIComponent(String(values[key] ?? "")),
   );
+}
+
+export function interpolateFromSource(template: string, source: unknown): string {
+  return template.replace(/\{\{([a-z][a-z0-9-]*(?:\.[a-zA-Z0-9_-]+)*)\}\}/g, (_, path: string) => {
+    const value = getByPath(source, path);
+    if (value === undefined || value === null || typeof value === "object") return "";
+    return encodeURIComponent(String(value));
+  });
 }
 
 export function collectJsonPaths(
@@ -117,13 +186,13 @@ export function collectJsonPaths(
   prefix = "",
   depth = 0,
 ): Array<{ path: string; value: unknown }> {
-  if (depth > 5 || value === null || typeof value !== "object") {
+  if (depth > 7 || value === null || typeof value !== "object") {
     return prefix ? [{ path: prefix, value }] : [];
   }
   const result: Array<{ path: string; value: unknown }> = [];
   const entries = Array.isArray(value)
-    ? value.slice(0, 4).map((item, index) => [String(index), item] as const)
-    : Object.entries(value as Record<string, unknown>).slice(0, 50);
+    ? value.slice(0, 8).map((item, index) => [String(index), item] as const)
+    : Object.entries(value as Record<string, unknown>).slice(0, 80);
   for (const [key, child] of entries) {
     const path = prefix ? `${prefix}.${key}` : key;
     if (child !== null && typeof child === "object") {

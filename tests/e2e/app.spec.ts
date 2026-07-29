@@ -11,14 +11,17 @@ test("landing page explains the workflow and opens the studio", async ({ page })
   await expect(page.getByText("我的 B 站名片")).toBeVisible();
 });
 
-test("creates and edits a vertical custom JSON card", async ({ page }) => {
+test("creates a multi-source card and customizes its layout", async ({ page }) => {
   await page.goto("/studio/new");
-  await page.getByRole("button", { name: /自定义 JSON API/ }).click();
-  await expect(page.getByRole("heading", { name: "基础信息" })).toBeVisible();
-  await page.getByRole("button", { name: /卡片设计/ }).click();
-  await page.getByRole("button", { name: "纵向窄卡片" }).click();
-  await expect(page.getByText("实时预览 · 纵向")).toBeVisible();
-  await page.getByRole("button", { name: /预览发布/ }).click();
+  await page.getByRole("button", { name: /多源人物档案/ }).click();
+  await expect(page.getByRole("heading", { name: "项目" })).toBeVisible();
+  await page.getByRole("button", { name: "2 数据源" }).click();
+  await expect(page.getByText("响应命名空间：requests.person")).toBeVisible();
+  await expect(page.getByText("响应命名空间：requests.posts")).toBeVisible();
+  await page.getByRole("button", { name: "5 视觉" }).click();
+  await page.getByLabel("卡片方向").selectOption("vertical");
+  await expect(page.getByText("560px · 纵向", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "6 发布" }).click();
   await expect(page.locator(".code-window pre")).toContainText("<info-card-craft");
 });
 
@@ -49,5 +52,5 @@ test("framework-free Web Component renders inside plain HTML", async ({ page }) 
         Math.round(element.getBoundingClientRect().width),
       ),
     )
-    .toBe(520);
+    .toBe(560);
 });

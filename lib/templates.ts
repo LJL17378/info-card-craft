@@ -1,4 +1,4 @@
-import type { TemplateKey, WorkflowConfig } from "@/lib/card-schema";
+import type { FieldBinding, TemplateKey, WorkflowConfig } from "@/lib/card-schema";
 
 export type TemplateDefinition = {
   key: TemplateKey;
@@ -10,138 +10,348 @@ export type TemplateDefinition = {
   config: WorkflowConfig;
 };
 
+const bind = (path: string, fallback?: string | number): FieldBinding => ({
+  path,
+  ...(fallback === undefined ? {} : { fallback }),
+  formatters: [],
+});
+
 const commonTheme = {
   direction: "horizontal" as const,
   mode: "light" as const,
+  preset: "editorial" as const,
   accent: "#ff6b84",
   surface: "#fffdf9",
+  text: "#202126",
   radius: 22,
   density: "comfortable" as const,
   shadow: true,
+  border: true,
+  width: 560,
+  blockGap: 12,
 };
+
+function legacyMapping(prefix: string) {
+  return {
+    avatar: bind(`${prefix}.avatar`),
+    title: bind(`${prefix}.name`, "未命名"),
+    subtitle: bind(`${prefix}.subtitle`),
+    badge: bind(`${prefix}.badge`),
+    description: bind(`${prefix}.description`),
+    background: bind(`${prefix}.background`),
+    url: bind(`${prefix}.url`),
+    stats: [],
+  };
+}
 
 export const templates: TemplateDefinition[] = [
   {
     key: "bilibili-user",
-    name: "B 站用户",
+    name: "B 站创作者",
     eyebrow: "CREATOR",
-    description: "展示 UP 主头像、签名、粉丝与投稿数据。",
+    description: "内置 B 站连接器，并可继续追加其他公开接口。",
     icon: "哔",
     accent: "#fb7299",
     config: {
       name: "我的 B 站名片",
-      description: "一张会自动更新的 B 站创作者卡片",
+      description: "可组合的 B 站创作者资料",
       template: "bilibili-user",
-      inputs: [
-        {
-          key: "uid",
-          label: "B 站 UID",
-          type: "number",
-          required: true,
-          defaultValue: 7900967,
-          previewValue: 7900967,
-        },
-      ],
-      request: {
-        url: "https://api.bilibili.com/x/web-interface/card?mid={{uid}}",
-        query: {},
-      },
+      inputs: [{
+        key: "uid", label: "B 站 UID", type: "number", required: true,
+        defaultValue: 7900967, previewValue: 7900967,
+      }],
+      requests: [{
+        id: "bili", name: "B 站公开资料", type: "bilibili-profile",
+        url: "https://api.bilibili.com", query: {}, failureMode: "abort",
+      }],
       mapping: {
-        avatar: { path: "profile.avatar", formatters: [] },
-        title: { path: "profile.name", fallback: "B 站用户", formatters: [] },
-        subtitle: { path: "profile.signature", formatters: [{ type: "truncate", value: 56 }] },
-        badge: { path: "profile.level", formatters: [{ type: "prefix", value: "LV" }] },
-        description: { path: "profile.signature", formatters: [] },
-        background: { path: "profile.banner", formatters: [] },
-        url: { path: "profile.url", formatters: [] },
-        stats: [
-          { label: "关注", value: { path: "profile.following", formatters: [{ type: "compact-number" }] } },
-          { label: "粉丝", value: { path: "profile.followers", formatters: [{ type: "compact-number" }] } },
-          { label: "获赞", value: { path: "profile.likes", formatters: [{ type: "compact-number" }] } },
-          { label: "投稿", value: { path: "profile.archiveCount", formatters: [{ type: "compact-number" }] } },
-        ],
+        avatar: bind("requests.bili.profile.avatar"),
+        title: bind("requests.bili.profile.name", "B 站用户"),
+        subtitle: bind("requests.bili.profile.signature"),
+        badge: { path: "requests.bili.profile.level", formatters: [{ type: "prefix", value: "LV" }] },
+        description: bind("requests.bili.profile.signature"),
+        background: bind("requests.bili.profile.banner"),
+        url: bind("requests.bili.profile.url"),
+        stats: [],
       },
-      theme: { ...commonTheme, accent: "#fb7299" },
+      layout: { blocks: [
+        {
+          id: "hero", type: "hero", hidden: false, align: "left",
+          avatar: bind("requests.bili.profile.avatar"),
+          avatarFrame: bind("requests.bili.profile.avatarFrame"),
+          title: bind("requests.bili.profile.name", "B 站用户"),
+          subtitle: bind("requests.bili.profile.signature"),
+          badge: { path: "requests.bili.profile.level", formatters: [{ type: "prefix", value: "LV" }] },
+          background: bind("requests.bili.profile.banner"),
+        },
+        {
+          id: "stats", type: "stats", hidden: false, columns: 4,
+          items: [
+            { label: "关注", value: { path: "requests.bili.profile.following", formatters: [{ type: "compact-number" }] } },
+            { label: "粉丝", value: { path: "requests.bili.profile.followers", formatters: [{ type: "compact-number" }] } },
+            { label: "投稿", value: { path: "requests.bili.profile.archiveCount", formatters: [{ type: "compact-number" }] } },
+          ],
+        },
+        {
+          id: "link", type: "links", hidden: false,
+          items: [{ label: "访问 B 站主页", url: bind("requests.bili.profile.url"), style: "primary" }],
+        },
+      ] },
+      theme: {
+        ...commonTheme,
+        accent: "#fb7299",
+        surface: "#fff7fa",
+        radius: 20,
+        preset: "bilibili",
+      },
     },
   },
   {
     key: "github-user",
-    name: "GitHub 用户",
-    eyebrow: "DEVELOPER",
-    description: "把公开 GitHub 资料和仓库数据放进博客。",
+    name: "GitHub 开发者",
+    eyebrow: "MULTI API",
+    description: "同时请求用户资料和仓库列表，演示跨接口组合。",
     icon: "GH",
-    accent: "#7c5cff",
+    accent: "#7357ff",
     config: {
-      name: "我的 GitHub 名片",
-      description: "展示公开开发者资料",
+      name: "GitHub 开发者名片",
+      description: "资料与最新仓库来自两个接口",
       template: "github-user",
-      inputs: [
+      inputs: [{
+        key: "username", label: "GitHub 用户名", type: "string", required: true,
+        defaultValue: "torvalds", previewValue: "torvalds",
+      }],
+      requests: [
         {
-          key: "username",
-          label: "GitHub 用户名",
-          type: "string",
-          required: true,
-          defaultValue: "torvalds",
-          previewValue: "torvalds",
+          id: "profile", name: "用户资料", type: "http",
+          url: "https://api.github.com/users/{{input.username}}",
+          query: {}, failureMode: "abort",
+        },
+        {
+          id: "repos", name: "最新仓库", type: "http",
+          url: "https://api.github.com/users/{{input.username}}/repos",
+          query: { sort: "updated", per_page: "3" }, failureMode: "continue",
         },
       ],
-      request: {
-        url: "https://api.github.com/users/{{username}}",
-        query: {},
-      },
       mapping: {
-        avatar: { path: "avatar_url", formatters: [] },
-        title: { path: "name", fallback: "GitHub User", formatters: [] },
-        subtitle: { path: "login", formatters: [{ type: "prefix", value: "@" }] },
-        badge: { path: "type", formatters: [] },
-        description: { path: "bio", fallback: "Building in public.", formatters: [{ type: "truncate", value: 88 }] },
-        url: { path: "html_url", formatters: [] },
-        stats: [
-          { label: "仓库", value: { path: "public_repos", formatters: [{ type: "compact-number" }] } },
-          { label: "粉丝", value: { path: "followers", formatters: [{ type: "compact-number" }] } },
-          { label: "关注", value: { path: "following", formatters: [{ type: "compact-number" }] } },
-        ],
+        avatar: bind("requests.profile.avatar_url"),
+        title: bind("requests.profile.name", "GitHub User"),
+        subtitle: { path: "requests.profile.login", formatters: [{ type: "prefix", value: "@" }] },
+        badge: bind("requests.profile.type"),
+        description: bind("requests.profile.bio"),
+        url: bind("requests.profile.html_url"),
+        stats: [],
       },
-      theme: { ...commonTheme, accent: "#7c5cff" },
+      layout: { blocks: [
+        {
+          id: "hero", type: "hero", hidden: false, align: "left",
+          avatar: bind("requests.profile.avatar_url"),
+          title: bind("requests.profile.name", "GitHub User"),
+          subtitle: { path: "requests.profile.login", formatters: [{ type: "prefix", value: "@" }] },
+          badge: bind("requests.profile.type"),
+        },
+        {
+          id: "bio", type: "text", hidden: false, label: "ABOUT",
+          content: bind("requests.profile.bio", "Building in public."),
+        },
+        {
+          id: "stats", type: "stats", hidden: false, columns: 3,
+          items: [
+            { label: "仓库", value: { path: "requests.profile.public_repos", formatters: [{ type: "compact-number" }] } },
+            { label: "粉丝", value: { path: "requests.profile.followers", formatters: [{ type: "compact-number" }] } },
+            { label: "关注", value: { path: "requests.profile.following", formatters: [{ type: "compact-number" }] } },
+          ],
+        },
+        {
+          id: "repo", type: "text", hidden: false, label: "RECENTLY UPDATED",
+          content: bind("requests.repos.0.full_name", "暂无公开仓库"),
+        },
+        {
+          id: "links", type: "links", hidden: false,
+          items: [
+            { label: "GitHub 主页", url: bind("requests.profile.html_url"), style: "primary" },
+            { label: "最新仓库", url: bind("requests.repos.0.html_url"), style: "secondary" },
+          ],
+        },
+      ] },
+      theme: {
+        ...commonTheme,
+        mode: "dark",
+        accent: "#2da44e",
+        surface: "#0d1117",
+        text: "#f0f6fc",
+        radius: 12,
+        shadow: false,
+        preset: "github",
+      },
     },
   },
   {
     key: "custom-json",
-    name: "自定义 JSON API",
-    eyebrow: "FLEXIBLE",
-    description: "连接一个公开 GET 接口，点选字段生成卡片。",
+    name: "空白 API 卡片",
+    eyebrow: "BLANK CANVAS",
+    description: "从一个示例源开始，可添加数据源与任意内容区块。",
     icon: "{}",
-    accent: "#10a37f",
+    accent: "#0f9f7c",
     config: {
       name: "自定义信息卡片",
-      description: "来自公开 JSON API 的动态信息",
+      description: "自由连接、解析和排版公开 JSON",
       template: "custom-json",
-      inputs: [
+      inputs: [{
+        key: "id", label: "资源 ID", type: "number", required: true,
+        defaultValue: 1, previewValue: 1,
+      }],
+      requests: [{
+        id: "user", name: "用户资料", type: "http",
+        url: "https://jsonplaceholder.typicode.com/users/{{input.id}}",
+        query: {}, failureMode: "abort",
+      }],
+      mapping: {
+        avatar: bind(""),
+        title: bind("requests.user.name", "API 数据"),
+        subtitle: bind("requests.user.company.name"),
+        badge: bind("requests.user.username"),
+        description: bind("requests.user.company.catchPhrase"),
+        url: { path: "requests.user.website", formatters: [{ type: "prefix", value: "https://" }] },
+        stats: [],
+      },
+      layout: { blocks: [
         {
-          key: "id",
-          label: "资源 ID",
-          type: "number",
-          required: true,
-          defaultValue: 1,
-          previewValue: 1,
+          id: "hero", type: "hero", hidden: false, align: "left",
+          title: bind("requests.user.name", "API 数据"),
+          subtitle: bind("requests.user.company.name"),
+          badge: { path: "requests.user.username", formatters: [{ type: "prefix", value: "@" }] },
+        },
+        {
+          id: "text", type: "text", hidden: false, label: "COMPANY",
+          content: bind("requests.user.company.catchPhrase"),
+        },
+        {
+          id: "stats", type: "stats", hidden: false, columns: 2,
+          items: [
+            { label: "城市", value: bind("requests.user.address.city") },
+            { label: "邮箱", value: bind("requests.user.email") },
+          ],
+        },
+      ] },
+      theme: { ...commonTheme, accent: "#0f9f7c", preset: "minimal" },
+    },
+  },
+  {
+    key: "multi-source-profile",
+    name: "多源人物档案",
+    eyebrow: "ORCHESTRATION",
+    description: "先取用户，再用相同输入取文章；两个响应合成一张卡。",
+    icon: "2×",
+    accent: "#ed7048",
+    config: {
+      name: "多源人物档案",
+      description: "用户资料与内容动态组合",
+      template: "multi-source-profile",
+      inputs: [{
+        key: "id", label: "用户 ID", type: "number", required: true,
+        defaultValue: 1, previewValue: 1,
+      }],
+      requests: [
+        {
+          id: "person", name: "人物资料", type: "http",
+          url: "https://jsonplaceholder.typicode.com/users/{{input.id}}",
+          query: {}, failureMode: "abort",
+        },
+        {
+          id: "posts", name: "人物文章", type: "http",
+          url: "https://jsonplaceholder.typicode.com/posts",
+          query: { userId: "{{input.id}}", _limit: "3" }, failureMode: "continue",
         },
       ],
-      request: {
-        url: "https://jsonplaceholder.typicode.com/users/{{id}}",
-        query: {},
-      },
+      mapping: legacyMapping("requests.person"),
+      layout: { blocks: [
+        {
+          id: "hero", type: "hero", hidden: false, align: "left",
+          title: bind("requests.person.name", "人物档案"),
+          subtitle: bind("requests.person.company.name"),
+          badge: bind("requests.person.username"),
+        },
+        {
+          id: "intro", type: "text", hidden: false, label: "LATEST STORY",
+          content: bind("requests.posts.0.title", "暂无内容"),
+        },
+        {
+          id: "stats", type: "stats", hidden: false, columns: 2,
+          items: [
+            { label: "城市", value: bind("requests.person.address.city") },
+            { label: "网站", value: bind("requests.person.website") },
+          ],
+        },
+        {
+          id: "link", type: "links", hidden: false,
+          items: [{
+            label: "访问个人网站",
+            url: { path: "requests.person.website", formatters: [{ type: "prefix", value: "https://" }] },
+            style: "primary",
+          }],
+        },
+      ] },
+      theme: { ...commonTheme, accent: "#ed7048", preset: "poster" },
+    },
+  },
+  {
+    key: "api-dashboard",
+    name: "指标仪表盘",
+    eyebrow: "DATA BOARD",
+    description: "面向统计数字和状态展示的紧凑型数据卡。",
+    icon: "↗",
+    accent: "#2674ff",
+    config: {
+      name: "API 指标仪表盘",
+      description: "把多个资源状态聚合成一张数据板",
+      template: "api-dashboard",
+      inputs: [{
+        key: "id", label: "任务 ID", type: "number", required: true,
+        defaultValue: 1, previewValue: 1,
+      }],
+      requests: [
+        {
+          id: "todo", name: "任务状态", type: "http",
+          url: "https://jsonplaceholder.typicode.com/todos/{{input.id}}",
+          query: {}, failureMode: "abort",
+        },
+        {
+          id: "post", name: "关联内容", type: "http",
+          url: "https://jsonplaceholder.typicode.com/posts/{{requests.todo.userId}}",
+          query: {}, failureMode: "continue",
+        },
+      ],
       mapping: {
-        title: { path: "name", fallback: "API 数据", formatters: [] },
-        subtitle: { path: "company.name", formatters: [] },
-        badge: { path: "username", formatters: [{ type: "prefix", value: "@" }] },
-        description: { path: "company.catchPhrase", formatters: [] },
-        url: { path: "website", formatters: [{ type: "prefix", value: "https://" }] },
-        stats: [
-          { label: "城市", value: { path: "address.city", formatters: [] } },
-          { label: "邮箱", value: { path: "email", formatters: [] } },
-        ],
+        ...legacyMapping("requests.todo"),
+        title: bind("requests.todo.title", "数据面板"),
       },
-      theme: { ...commonTheme, accent: "#10a37f" },
+      layout: { blocks: [
+        {
+          id: "hero", type: "hero", hidden: false, align: "left",
+          title: bind("requests.todo.title", "数据面板"),
+          subtitle: bind("requests.post.title", "实时 API 状态"),
+          badge: { path: "requests.todo.completed", formatters: [{ type: "prefix", value: "完成：" }] },
+        },
+        {
+          id: "stats", type: "stats", hidden: false, columns: 3,
+          items: [
+            { label: "任务 ID", value: bind("requests.todo.id") },
+            { label: "用户 ID", value: bind("requests.todo.userId") },
+            { label: "完成状态", value: bind("requests.todo.completed") },
+          ],
+        },
+        { id: "divider", type: "divider", hidden: false },
+        {
+          id: "content", type: "text", hidden: false, label: "RELATED",
+          content: bind("requests.post.body", "暂无关联内容"),
+        },
+      ] },
+      theme: {
+        ...commonTheme,
+        mode: "dark", surface: "#101522", text: "#f3f6ff",
+        accent: "#4384ff", preset: "glass", density: "compact",
+      },
     },
   },
 ];

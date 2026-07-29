@@ -2,93 +2,145 @@ const API_BASE = new URL(".", import.meta.url);
 
 const styles = `
   :host {
-    display: inline-block;
-    width: 520px;
-    max-width: 100%;
-    color-scheme: light dark;
-    contain: content;
+    display: inline-block; width: var(--host-width, 560px); max-width: 100%;
+    color-scheme: light dark; contain: content;
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
   * { box-sizing: border-box; }
   .state {
-    width: min(100%, 420px);
-    min-height: 150px;
-    padding: 22px;
-    border-radius: 20px;
-    display: grid;
-    place-items: center;
-    text-align: center;
-    color: #77747d;
-    background: #fffdf9;
-    border: 1px solid rgba(25,25,30,.1);
-    font-size: 13px;
+    width: min(100%, 420px); min-height: 150px; padding: 22px; border-radius: 20px;
+    display: grid; place-items: center; text-align: center; color: #77747d;
+    background: #fffdf9; border: 1px solid rgba(25,25,30,.1); font-size: 13px;
   }
   .spinner {
-    width: 22px;
-    height: 22px;
-    border: 2px solid rgba(25,25,30,.12);
-    border-top-color: #ff6b84;
-    border-radius: 50%;
-    animation: spin .8s linear infinite;
+    width: 22px; height: 22px; border: 2px solid rgba(25,25,30,.12);
+    border-top-color: #ff6b84; border-radius: 50%; animation: spin .8s linear infinite;
   }
   .error strong { display: block; color: #b83b53; margin-bottom: 6px; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .card {
-    width: min(520px, 100%);
-    min-height: 265px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    position: relative;
-    color: var(--text);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
+  .craft-card {
+    width: 100%; padding: var(--gap); display: flex; flex-direction: column; gap: var(--gap);
+    overflow: hidden; color: var(--text); background: var(--surface);
+    border: var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
   }
-  .card.vertical { width: min(310px, 100%); min-height: 420px; }
-  .cover {
-    min-height: 124px;
-    padding: var(--padding);
-    display: flex;
-    align-items: flex-end;
-    position: relative;
-    color: white;
-    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 45%, #272832));
+  .preset-glass {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--surface) 92%, transparent), color-mix(in srgb, var(--accent) 18%, var(--surface)));
+    backdrop-filter: blur(18px);
   }
-  .vertical .cover { min-height: 178px; }
-  .identity { display: flex; gap: 13px; align-items: center; min-width: 0; position: relative; z-index: 1; }
-  .avatar {
-    width: 58px; height: 58px; object-fit: cover; flex: 0 0 auto;
-    border: 3px solid rgba(255,255,255,.82); border-radius: 18px;
+  .preset-poster {
+    background: radial-gradient(circle at 90% 0%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 42%), var(--surface);
   }
-  .vertical .avatar { width: 64px; height: 64px; }
-  .avatar-fallback {
-    width: 58px; height: 58px; display: grid; place-items: center; flex: 0 0 auto;
-    border: 2px solid rgba(255,255,255,.7); border-radius: 18px;
-    background: rgba(255,255,255,.18); font-size: 22px; font-weight: 850;
+  .craft-hero {
+    min-height: 112px; padding: var(--pad); border-radius: calc(var(--radius) * .72);
+    display: flex; align-items: flex-end; gap: 13px; color: white;
+    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 28%, #171922));
+    background-size: cover; background-position: center;
   }
-  .name-row { display: flex; align-items: center; gap: 7px; min-width: 0; }
-  .name { font-size: 21px; line-height: 1.1; font-weight: 820; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .badge { padding: 3px 6px; border-radius: 6px; background: var(--accent); font-size: 9px; font-weight: 850; }
-  .subtitle { display: block; margin-top: 5px; opacity: .8; font-size: 11px; }
-  .body { padding: var(--padding); display: flex; flex-direction: column; flex: 1; }
-  .description { margin: 0 0 15px; opacity: .68; font-size: 12px; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .stats { display: grid; grid-template-columns: repeat(var(--stat-count), 1fr); gap: 8px; margin-top: auto; }
-  .vertical .stats { grid-template-columns: 1fr 1fr; }
-  .stat { padding: 9px 10px; border-radius: 11px; background: var(--stat-bg); }
-  .stat-label { display: block; margin-bottom: 4px; opacity: .55; font-size: 9px; }
-  .stat-value { font-size: 13px; }
-  .action {
-    min-height: 38px; margin-top: 13px; display: grid; place-items: center;
-    border-radius: 11px; color: white; background: var(--accent); text-decoration: none;
-    font-size: 11px; font-weight: 780;
+  .preset-minimal .craft-hero {
+    min-height: auto; padding: calc(var(--pad) * .65) 2px; color: var(--text); background: transparent;
   }
-  @media (max-width: 380px) {
-    .card:not(.vertical) .stats { grid-template-columns: 1fr 1fr; }
+  .craft-hero.align-center { flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .craft-avatar {
+    width: 58px; height: 58px; flex: 0 0 auto; border: 2px solid rgba(255,255,255,.78);
+    border-radius: calc(var(--radius) * .56); object-fit: cover;
   }
+  .craft-avatar-wrap { width: 58px; height: 58px; position: relative; flex: 0 0 auto; }
+  .craft-avatar-frame {
+    width: 76px; height: 76px; position: absolute; inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%); object-fit: contain; pointer-events: none;
+  }
+  .preset-minimal .craft-avatar { border-color: color-mix(in srgb, var(--text) 15%, transparent); }
+  .craft-avatar-fallback {
+    display: grid; place-items: center; background: rgba(255,255,255,.18);
+    font-size: 21px; font-weight: 850;
+  }
+  .preset-minimal .craft-avatar-fallback { color: white; background: var(--accent); }
+  .craft-identity { min-width: 0; }
+  .craft-title-row { display: flex; align-items: center; gap: 7px; min-width: 0; }
+  .craft-title {
+    margin: 0; overflow: hidden; font-size: clamp(17px, 4vw, 22px); line-height: 1.08;
+    letter-spacing: -.035em; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .craft-badge {
+    padding: 3px 6px; border-radius: 6px; flex: 0 0 auto; color: white;
+    background: var(--accent); font-size: 8px; font-weight: 850;
+  }
+  .craft-subtitle { margin: 5px 0 0; overflow: hidden; opacity: .76; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+  .craft-text { padding: 4px var(--pad); }
+  .craft-label { display: block; margin-bottom: 7px; color: var(--accent); font-size: 8px; font-weight: 850; letter-spacing: .13em; }
+  .craft-text p { margin: 0; opacity: .74; font-size: 11px; line-height: 1.65; }
+  .craft-stats { display: grid; gap: 7px; }
+  .craft-stat {
+    min-width: 0; padding: 10px 11px; border: 1px solid color-mix(in srgb, var(--text) 7%, transparent);
+    border-radius: calc(var(--radius) * .42); background: color-mix(in srgb, var(--text) 4%, transparent);
+  }
+  .craft-stat span { display: block; margin-bottom: 5px; overflow: hidden; opacity: .52; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+  .craft-stat strong { display: block; overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+  .craft-image { width: 100%; display: block; border-radius: calc(var(--radius) * .55); object-fit: cover; }
+  .craft-image.ratio-wide { aspect-ratio: 16 / 8; }
+  .craft-image.ratio-square { aspect-ratio: 1; }
+  .craft-links { display: flex; gap: 7px; flex-wrap: wrap; }
+  .craft-link {
+    min-height: 36px; padding: 0 13px; border-radius: calc(var(--radius) * .42);
+    display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+    flex: 1 1 auto; color: white; background: var(--accent); text-decoration: none;
+    font-size: 9px; font-weight: 760;
+  }
+  .craft-link span { margin-left: auto; }
+  .craft-link.secondary { color: var(--text); border: 1px solid color-mix(in srgb, var(--text) 13%, transparent); background: transparent; }
+  .craft-link.text { color: var(--accent); background: transparent; }
+  .craft-divider { width: 100%; height: 1px; margin: 1px 0; border: 0; background: color-mix(in srgb, var(--text) 10%, transparent); }
+  .direction-vertical .craft-stats { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .preset-github { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  .preset-github .craft-hero {
+    min-height: 96px; padding: 12px 8px 18px; align-items: center; color: var(--text);
+    border-bottom: 1px solid #30363d; border-radius: 0; background: transparent !important;
+  }
+  .preset-github .craft-avatar, .preset-github .craft-avatar-fallback { border: 1px solid #30363d; border-radius: 50%; }
+  .preset-github .craft-title { font-weight: 600; }
+  .preset-github .craft-badge { color: #8c959f; border: 1px solid #30363d; border-radius: 999px; background: #21262d; }
+  .preset-github .craft-label { color: #8c959f; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .preset-github .craft-stat { border-color: #30363d; border-radius: 6px; background: #161b22; }
+  .preset-github .craft-stat strong { color: #f0f6fc; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .preset-github .craft-link { border: 1px solid rgba(240,246,252,.1); border-radius: 6px; background: #238636; }
+  .preset-github .craft-link.secondary { color: #f0f6fc; border-color: #30363d; background: #21262d; }
+  .preset-bilibili {
+    background: radial-gradient(circle at 95% 0%, rgba(251,114,153,.16), transparent 34%), var(--surface);
+  }
+  .preset-bilibili .craft-hero {
+    min-height: 132px;
+    background: linear-gradient(0deg, rgba(38,24,32,.54), rgba(251,114,153,.08)), linear-gradient(135deg, #fb7299, #8d6de8);
+  }
+  .preset-bilibili .craft-avatar, .preset-bilibili .craft-avatar-fallback {
+    border: 3px solid white; border-radius: 50%; outline: 3px solid #fb7299; box-shadow: 0 4px 16px rgba(42,21,32,.24);
+  }
+  .preset-bilibili .craft-avatar-frame { width: 82px; height: 82px; }
+  .preset-bilibili .craft-badge { border-radius: 5px; background: #fb7299; }
+  .preset-bilibili .craft-stat { border-color: rgba(251,114,153,.14); background: rgba(251,114,153,.065); }
+  .preset-bilibili .craft-link { border-radius: 999px; background: #fb7299; }
+  @media (max-width: 380px) { .craft-stats { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } }
   @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
 `;
+
+function element(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function legacyBlocks(data) {
+  return [
+    {
+      id: "legacy-hero", type: "hero", avatar: data.identity.avatar, avatarFrame: "",
+      title: data.identity.title, subtitle: data.identity.subtitle,
+      badge: data.identity.badge, background: data.content.background, align: "left",
+    },
+    ...(data.content.description ? [{ id: "legacy-text", type: "text", label: "", content: data.content.description }] : []),
+    ...(data.stats.length ? [{ id: "legacy-stats", type: "stats", columns: Math.min(data.stats.length, 4), items: data.stats }] : []),
+    ...(data.actions.url ? [{ id: "legacy-link", type: "links", items: [{ label: data.actions.label, url: data.actions.url, style: "primary" }] }] : []),
+  ];
+}
 
 class InfoCardCraft extends HTMLElement {
   constructor() {
@@ -96,12 +148,9 @@ class InfoCardCraft extends HTMLElement {
     this.attachShadow({ mode: "open" });
     this._requestId = 0;
     this._observer = new MutationObserver((records) => {
-      const shouldReload = records.some(({ attributeName }) =>
-        attributeName === "card-id" ||
-        attributeName === "version" ||
-        attributeName?.startsWith("input-")
-      );
-      if (shouldReload) this.load();
+      if (records.some(({ attributeName }) =>
+        attributeName === "card-id" || attributeName === "version" || attributeName?.startsWith("input-")
+      )) this.load();
     });
   }
 
@@ -117,9 +166,7 @@ class InfoCardCraft extends HTMLElement {
   inputs() {
     const result = {};
     for (const attribute of this.attributes) {
-      if (attribute.name.startsWith("input-")) {
-        result[attribute.name.slice(6)] = attribute.value;
-      }
+      if (attribute.name.startsWith("input-")) result[attribute.name.slice(6)] = attribute.value;
     }
     return result;
   }
@@ -127,22 +174,19 @@ class InfoCardCraft extends HTMLElement {
   setState(kind, message = "") {
     const root = this.shadowRoot;
     root.replaceChildren();
-    const style = document.createElement("style");
+    const style = element("style");
     style.textContent = styles;
-    const state = document.createElement("div");
-    state.className = `state ${kind}`;
+    const state = element("div", `state ${kind}`);
     if (kind === "loading") {
-      const spinner = document.createElement("span");
-      spinner.className = "spinner";
+      const spinner = element("span", "spinner");
       spinner.setAttribute("aria-label", "正在加载卡片");
       state.append(spinner);
     } else {
-      const wrap = document.createElement("div");
-      const strong = document.createElement("strong");
-      strong.textContent = kind === "error" ? "卡片暂时无法加载" : "这张卡片还没有内容";
-      const text = document.createElement("span");
-      text.textContent = message;
-      wrap.append(strong, text);
+      const wrap = element("div");
+      wrap.append(
+        element("strong", "", kind === "error" ? "卡片暂时无法加载" : "这张卡片还没有内容"),
+        element("span", "", message),
+      );
       state.append(wrap);
     }
     root.append(style, state);
@@ -150,28 +194,21 @@ class InfoCardCraft extends HTMLElement {
 
   async load() {
     const cardId = this.getAttribute("card-id");
-    if (!cardId) {
-      this.setState("error", "缺少 card-id 属性");
-      return;
-    }
+    if (!cardId) return this.setState("error", "缺少 card-id 属性");
     const requestId = ++this._requestId;
-    this.style.width = "420px";
+    this.style.setProperty("--host-width", "420px");
     this.setState("loading");
     const url = new URL(`api/public/cards/${encodeURIComponent(cardId)}/render`, API_BASE);
     const version = this.getAttribute("version");
     if (version) url.searchParams.set("version", version);
-    for (const [key, value] of Object.entries(this.inputs())) {
-      url.searchParams.set(`input-${key}`, value);
-    }
+    for (const [key, value] of Object.entries(this.inputs())) url.searchParams.set(`input-${key}`, value);
     try {
       const response = await fetch(url, { headers: { Accept: "application/json" } });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.error || `HTTP ${response.status}`);
       if (requestId !== this._requestId) return;
       this.render(payload.data, payload.theme);
-      this.dispatchEvent(new CustomEvent("info-card-loaded", {
-        detail: { cardId, version: payload.version },
-      }));
+      this.dispatchEvent(new CustomEvent("info-card-loaded", { detail: { cardId, version: payload.version } }));
     } catch (error) {
       if (requestId !== this._requestId) return;
       this.setState("error", error instanceof Error ? error.message : "未知错误");
@@ -182,95 +219,88 @@ class InfoCardCraft extends HTMLElement {
   }
 
   render(data, theme) {
-    this.style.width = theme.direction === "vertical" ? "310px" : "520px";
+    const width = theme.direction === "vertical" ? Math.min(theme.width, 380) : theme.width;
+    this.style.setProperty("--host-width", `${width}px`);
     const root = this.shadowRoot;
     root.replaceChildren();
-    const style = document.createElement("style");
+    const style = element("style");
     style.textContent = styles;
-    const card = document.createElement("article");
-    card.className = `card ${theme.direction === "vertical" ? "vertical" : ""}`;
+    const card = element("article", `craft-card card preset-${theme.preset} direction-${theme.direction}`);
     card.style.setProperty("--accent", theme.accent);
     card.style.setProperty("--surface", theme.surface);
+    card.style.setProperty("--text", theme.text);
     card.style.setProperty("--radius", `${theme.radius}px`);
-    card.style.setProperty("--padding", theme.density === "compact" ? "16px" : "21px");
-    card.style.setProperty("--text", theme.mode === "dark" ? "#f7f5f2" : "#202126");
-    card.style.setProperty("--border", theme.mode === "dark" ? "rgba(255,255,255,.1)" : "rgba(25,25,30,.09)");
-    card.style.setProperty("--stat-bg", theme.mode === "dark" ? "rgba(255,255,255,.07)" : "rgba(25,25,30,.045)");
-    card.style.setProperty("--shadow", theme.shadow ? "0 24px 58px rgba(35,32,28,.18)" : "none");
-    card.style.setProperty("--stat-count", String(Math.min(data.stats.length, 4)));
+    card.style.setProperty("--gap", `${theme.blockGap}px`);
+    card.style.setProperty("--pad", theme.density === "compact" ? "14px" : theme.density === "airy" ? "24px" : "18px");
+    card.style.setProperty("--border", theme.border ? `1px solid color-mix(in srgb, ${theme.text} 13%, transparent)` : "none");
+    card.style.setProperty("--shadow", theme.shadow ? "0 28px 80px color-mix(in srgb, var(--text) 18%, transparent)" : "none");
 
-    const cover = document.createElement("div");
-    cover.className = "cover";
-    if (data.content.background) {
-      cover.style.background = `linear-gradient(0deg, rgba(15,15,18,.78), rgba(15,15,18,.06)), url("${CSS.escape(data.content.background)}") center/cover`;
+    const blocks = data.blocks?.length ? data.blocks : legacyBlocks(data);
+    for (const block of blocks) {
+      if (block.type === "hero") {
+        const hero = element("section", `craft-hero align-${block.align || "left"}`);
+        if (block.background) hero.style.backgroundImage = `linear-gradient(90deg, rgba(10,12,18,.82), rgba(10,12,18,.2)), url("${block.background}")`;
+        const avatarWrap = element("span", "craft-avatar-wrap");
+        if (block.avatar) {
+          const avatar = element("img", "craft-avatar");
+          avatar.src = block.avatar;
+          avatar.alt = "";
+          avatar.referrerPolicy = "no-referrer";
+          avatarWrap.append(avatar);
+        } else {
+          avatarWrap.append(element("span", "craft-avatar craft-avatar-fallback", (block.title || "?").slice(0, 1)));
+        }
+        if (block.avatarFrame) {
+          const frame = element("img", "craft-avatar-frame");
+          frame.src = block.avatarFrame;
+          frame.alt = "";
+          frame.referrerPolicy = "no-referrer";
+          avatarWrap.append(frame);
+        }
+        hero.append(avatarWrap);
+        const identity = element("div", "craft-identity");
+        const titleRow = element("div", "craft-title-row");
+        titleRow.append(element("h3", "craft-title name", block.title));
+        if (block.badge) titleRow.append(element("span", "craft-badge", block.badge));
+        identity.append(titleRow);
+        if (block.subtitle) identity.append(element("p", "craft-subtitle", block.subtitle));
+        hero.append(identity);
+        card.append(hero);
+      } else if (block.type === "text" && block.content) {
+        const section = element("section", "craft-text");
+        if (block.label) section.append(element("span", "craft-label", block.label));
+        section.append(element("p", "", block.content));
+        card.append(section);
+      } else if (block.type === "stats") {
+        const stats = element("section", "craft-stats");
+        stats.style.gridTemplateColumns = `repeat(${block.columns}, minmax(0, 1fr))`;
+        for (const item of block.items) {
+          const stat = element("div", "craft-stat");
+          stat.append(element("span", "", item.label), element("strong", "", item.value || "—"));
+          stats.append(stat);
+        }
+        card.append(stats);
+      } else if (block.type === "image" && block.src) {
+        const image = element("img", `craft-image ratio-${block.ratio}`);
+        image.src = block.src;
+        image.alt = block.alt || "";
+        image.referrerPolicy = "no-referrer";
+        card.append(image);
+      } else if (block.type === "links" && block.items.length) {
+        const links = element("section", "craft-links");
+        for (const item of block.items) {
+          const link = element("a", `craft-link ${item.style}`, item.label);
+          link.href = item.url;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.append(element("span", "", "↗"));
+          links.append(link);
+        }
+        card.append(links);
+      } else if (block.type === "divider") {
+        card.append(element("hr", "craft-divider"));
+      }
     }
-    const identity = document.createElement("div");
-    identity.className = "identity";
-    if (data.identity.avatar) {
-      const avatar = document.createElement("img");
-      avatar.className = "avatar";
-      avatar.src = data.identity.avatar;
-      avatar.alt = "";
-      identity.append(avatar);
-    } else {
-      const fallback = document.createElement("span");
-      fallback.className = "avatar-fallback";
-      fallback.textContent = data.identity.title.slice(0, 1);
-      identity.append(fallback);
-    }
-    const heading = document.createElement("div");
-    const nameRow = document.createElement("div");
-    nameRow.className = "name-row";
-    const name = document.createElement("strong");
-    name.className = "name";
-    name.textContent = data.identity.title;
-    nameRow.append(name);
-    if (data.identity.badge) {
-      const badge = document.createElement("span");
-      badge.className = "badge";
-      badge.textContent = data.identity.badge;
-      nameRow.append(badge);
-    }
-    const subtitle = document.createElement("span");
-    subtitle.className = "subtitle";
-    subtitle.textContent = data.identity.subtitle;
-    heading.append(nameRow, subtitle);
-    identity.append(heading);
-    cover.append(identity);
-
-    const body = document.createElement("div");
-    body.className = "body";
-    if (data.content.description) {
-      const description = document.createElement("p");
-      description.className = "description";
-      description.textContent = data.content.description;
-      body.append(description);
-    }
-    const stats = document.createElement("div");
-    stats.className = "stats";
-    for (const item of data.stats) {
-      const stat = document.createElement("div");
-      stat.className = "stat";
-      const label = document.createElement("span");
-      label.className = "stat-label";
-      label.textContent = item.label;
-      const value = document.createElement("strong");
-      value.className = "stat-value";
-      value.textContent = item.value || "—";
-      stat.append(label, value);
-      stats.append(stat);
-    }
-    body.append(stats);
-    if (data.actions.url) {
-      const action = document.createElement("a");
-      action.className = "action";
-      action.href = data.actions.url;
-      action.target = "_blank";
-      action.rel = "noopener noreferrer";
-      action.textContent = `${data.actions.label} ↗`;
-      body.append(action);
-    }
-    card.append(cover, body);
     root.append(style, card);
   }
 }

@@ -3,7 +3,7 @@
 import type { StoredCard, TemplateKey, WorkflowConfig } from "@/lib/card-schema";
 import { cloneTemplateConfig } from "@/lib/templates";
 
-const STORAGE_KEY = "info-card-craft:cards:v1";
+const STORAGE_KEY = "info-card-craft:cards:v3";
 const CHANGE_EVENT = "info-card-craft:change";
 
 function now() {

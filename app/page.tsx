@@ -4,7 +4,7 @@ import { CardPreview } from "@/components/card-preview";
 import { SiteNav } from "@/components/site-nav";
 import { getTemplate, templates } from "@/lib/templates";
 
-const workflowSteps = ["选择模板", "定义输入", "连接数据", "映射字段", "设计卡片", "发布嵌入"];
+const workflowSteps = ["定义参数", "编排接口", "检查响应", "组合区块", "设计卡片", "发布嵌入"];
 
 export default function HomePage() {
   const heroTheme = getTemplate("bilibili-user").config.theme;
@@ -17,7 +17,7 @@ export default function HomePage() {
             <div className="eyebrow">API → CARD → BLOG</div>
             <h1 className="display">把流动的数据，做成博客的一部分。</h1>
             <p className="lede">
-              连接公开 API，点选字段，设计一张真正属于你的动态卡片。
+              编排多个公开 API，把跨接口字段组合成自由内容区块，再发布为动态卡片。
               不用写组件，也不必被某个博客框架绑定。
             </p>
             <div className="hero-actions">
@@ -59,6 +59,7 @@ export default function HomePage() {
                     { label: "投稿", value: "212" },
                   ],
                   actions: { label: "查看主页", url: "https://space.bilibili.com/7900967" },
+                  blocks: [],
                 }}
               />
             </div>

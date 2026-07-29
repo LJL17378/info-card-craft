@@ -1,15 +1,27 @@
 # Info Card Craft
 
-把公开 API、RSS 或 JSON 数据转换成可嵌入任意博客的动态信息卡片。
+把多个公开 JSON API 编排、解析并转换成可嵌入任意博客的动态信息卡片。
 
-当前 MVP 提供 B 站用户、GitHub 用户和自定义 JSON API 三种模板，以及一条清晰的六步工作流：
+当前版本提供 B 站创作者、GitHub 开发者、空白 API、多源人物档案和指标仪表盘五种起点：
 
-1. 选择模板
-2. 定义输入
-3. 连接公开 GET API
-4. 映射响应字段
-5. 设计卡片
-6. 发布 Web Component
+1. 定义嵌入时可变的输入参数。
+2. 编排最多 6 个公开 GET 数据源。
+3. 用 `{{input.id}}` 读取输入，用 `{{requests.profile.id}}` 在后续请求中读取前序响应。
+4. 在统一响应树中解析每个命名空间的字段。
+5. 自由增删和排序人物标题、文本、指标、图片、链接与分隔线区块。
+6. 调整平台预设、尺寸、方向、颜色、密度、圆角、边框和阴影后发布 Web Component。
+
+每个请求都可选择“失败即停止”或“保留错误并继续”，因此次要接口临时不可用时不必让整张卡片消失。所有转换仍然只使用安全的内置格式化器，不运行用户 JavaScript。
+
+### 多接口配置示例
+
+```text
+profile: https://api.example.com/users/{{input.username}}
+repos:   https://api.example.com/users/{{input.username}}/repos
+detail:  https://api.example.com/items/{{requests.repos.0.id}}
+```
+
+三个响应会保存为 `requests.profile`、`requests.repos` 和 `requests.detail`，内容区块可以同时引用其中任意字段。
 
 ## 本地运行
 
@@ -139,6 +151,7 @@ Web Component 使用 Shadow DOM，不会被博客主题的 CSS 污染。
 - 重定向逐次校验，最多 3 次。
 - 请求超时 8 秒，响应最大 1 MB。
 - 不接受 Cookie、Authorization Header、用户名密码或用户 JavaScript。
+- 单张卡片最多执行 6 个数据源、渲染 16 个内容区块。
 
 ## 质量检查
 
