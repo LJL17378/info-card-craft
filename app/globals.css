@@ -1933,6 +1933,10 @@ a {
   height: 96px;
 }
 
+.preset-bilibili .craft-identity {
+  text-shadow: 0 1px 5px rgba(0, 0, 0, .55);
+}
+
 .preset-bilibili .craft-badge {
   border-radius: 5px;
   background: #fb7299;

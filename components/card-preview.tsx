@@ -52,13 +52,15 @@ function LegacyBlocks(data: CardData): ResolvedBlock[] {
   ];
 }
 
-function Block({ block }: { block: ResolvedBlock }) {
+function Block({ block, preset }: { block: ResolvedBlock; preset: CardTheme["preset"] }) {
   if (block.type === "hero") {
     return (
       <section
         className={`craft-block craft-hero align-${block.align}`}
         style={block.background ? {
-          backgroundImage: `linear-gradient(90deg, rgba(10,12,18,.82), rgba(10,12,18,.2)), url("${block.background}")`,
+          backgroundImage: preset === "bilibili"
+            ? `url("${block.background}")`
+            : `linear-gradient(90deg, rgba(10,12,18,.82), rgba(10,12,18,.2)), url("${block.background}")`,
         } : undefined}
       >
         <span className="craft-avatar-wrap">
@@ -153,7 +155,7 @@ export function CardPreview({
         boxShadow: theme.shadow ? "0 28px 80px color-mix(in srgb, var(--craft-text) 18%, transparent)" : "none",
       } as React.CSSProperties}
     >
-      {blocks.map((block) => <Block block={block} key={block.id} />)}
+      {blocks.map((block) => <Block block={block} preset={theme.preset} key={block.id} />)}
     </article>
   );
 }

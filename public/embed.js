@@ -117,6 +117,7 @@ const styles = `
   .preset-bilibili .craft-avatar-wrap { width: 68px; height: 68px; }
   .preset-bilibili .craft-avatar { width: 68px; height: 68px; }
   .preset-bilibili .craft-avatar-frame { width: 96px; height: 96px; }
+  .preset-bilibili .craft-identity { text-shadow: 0 1px 5px rgba(0,0,0,.55); }
   .preset-bilibili .craft-badge { border-radius: 5px; background: #fb7299; }
   .preset-bilibili .craft-stat { border-color: rgba(251,114,153,.14); background: rgba(251,114,153,.065); }
   .preset-bilibili .craft-link { border-radius: 999px; background: #fb7299; }
@@ -241,7 +242,11 @@ class InfoCardCraft extends HTMLElement {
     for (const block of blocks) {
       if (block.type === "hero") {
         const hero = element("section", `craft-hero align-${block.align || "left"}`);
-        if (block.background) hero.style.backgroundImage = `linear-gradient(90deg, rgba(10,12,18,.82), rgba(10,12,18,.2)), url("${block.background}")`;
+        if (block.background) {
+          hero.style.backgroundImage = theme.preset === "bilibili"
+            ? `url("${block.background}")`
+            : `linear-gradient(90deg, rgba(10,12,18,.82), rgba(10,12,18,.2)), url("${block.background}")`;
+        }
         const avatarWrap = element("span", "craft-avatar-wrap");
         if (block.avatar) {
           const avatar = element("img", "craft-avatar");
