@@ -6,6 +6,9 @@ export const templateKeySchema = z.enum([
   "custom-json",
   "multi-source-profile",
   "api-dashboard",
+  "nowcoder-user",
+  "zhihu-user",
+  "leetcode-user",
 ]);
 
 const valueSchema = z.union([z.string(), z.number(), z.boolean()]);
@@ -48,7 +51,13 @@ export const statBindingSchema = z.object({
 export const requestConfigSchema = z.object({
   id: z.string().min(1).max(32).regex(/^[a-z][a-z0-9-]*$/).default("main"),
   name: z.string().min(1).max(60).default("数据源"),
-  type: z.enum(["http", "bilibili-profile"]).default("http"),
+  type: z.enum([
+    "http",
+    "bilibili-profile",
+    "nowcoder-profile",
+    "zhihu-profile",
+    "leetcode-profile",
+  ]).default("http"),
   url: z.string().max(2048),
   query: z.record(z.string(), z.string()).default({}),
   failureMode: z.enum(["abort", "continue"]).default("abort"),

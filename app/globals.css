@@ -1905,10 +1905,12 @@ a {
 }
 
 .preset-bilibili .craft-hero {
-  min-height: 132px;
+  min-height: 184px;
   background:
     linear-gradient(0deg, rgba(38,24,32,.54), rgba(251,114,153,.08)),
     linear-gradient(135deg, #fb7299, #8d6de8);
+  background-position: center center;
+  background-size: cover;
 }
 
 .preset-bilibili .craft-avatar,
@@ -1919,18 +1921,22 @@ a {
 }
 
 .preset-bilibili .craft-avatar-wrap {
-  width: 68px;
-  height: 68px;
+  width: 74px;
+  height: 74px;
+  margin: 0 3px 2px;
 }
 
 .preset-bilibili .craft-avatar {
-  width: 68px;
-  height: 68px;
+  width: 74px;
+  height: 74px;
 }
 
 .preset-bilibili .craft-avatar-frame {
-  width: 96px;
-  height: 96px;
+  width: 102px;
+  height: 102px;
+  max-width: none;
+  inset: -14px;
+  transform: none;
 }
 
 .preset-bilibili .craft-identity {

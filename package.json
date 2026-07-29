@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:connectors": "vite-node --config vitest.config.ts scripts/smoke-connectors.ts",
     "test:e2e": "playwright test"
   },
   "dependencies": {

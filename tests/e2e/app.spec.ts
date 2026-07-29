@@ -25,6 +25,17 @@ test("creates a multi-source card and customizes its layout", async ({ page }) =
   await expect(page.locator(".code-window pre")).toContainText("<info-card-craft");
 });
 
+test("offers Nowcoder, Zhihu and LeetCode templates with live previews", async ({
+  page,
+}) => {
+  await page.goto("/studio/new");
+  await expect(page.getByRole("button", { name: /牛客档案/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /知乎创作者/ })).toBeVisible();
+  await page.getByRole("button", { name: /力扣进度/ }).click();
+  await expect(page.getByText("LeetCode", { exact: true })).toBeVisible();
+  await expect(page.getByText("已解决", { exact: true })).toBeVisible();
+});
+
 test("public demo render endpoint returns a normalized card", async ({ request }) => {
   const response = await request.get(
     "/api/public/cards/demo-github/render?input-username=torvalds",

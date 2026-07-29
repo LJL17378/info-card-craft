@@ -186,6 +186,166 @@ async function fetchBilibili(uid: string | number) {
   };
 }
 
+async function fetchFixedResponse(
+  url: string,
+  init: RequestInit = {},
+): Promise<Response> {
+  try {
+    const response = await fetch(url, {
+      ...init,
+      signal: AbortSignal.timeout(8_000),
+      cache: "no-store",
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 " +
+          "(KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+        ...init.headers,
+      },
+    });
+    if (!response.ok) {
+      throw new SafeFetchError(`上游接口返回 HTTP ${response.status}`, 502);
+    }
+    const length = Number(response.headers.get("content-length") ?? 0);
+    if (length > 1024 * 1024) {
+      throw new SafeFetchError("上游响应超过 1 MB 限制", 413);
+    }
+    return response;
+  } catch (error) {
+    if (error instanceof SafeFetchError) throw error;
+    throw new SafeFetchError(
+      error instanceof Error && error.name === "TimeoutError"
+        ? "上游接口响应超时"
+        : "无法连接上游接口",
+      502,
+    );
+  }
+}
+
+async function fetchZhihu(token: string | number) {
+  const slug = String(token);
+  if (!/^[a-zA-Z0-9_-]{2,80}$/.test(slug)) {
+    throw new SafeFetchError("知乎主页标识格式不正确");
+  }
+  const include = [
+    "answer_count",
+    "articles_count",
+    "follower_count",
+    "following_count",
+    "voteup_count",
+    "thanked_count",
+  ].join(",");
+  const profile = await safeFetchJson(
+    `https://www.zhihu.com/api/v4/members/${encodeURIComponent(slug)}?include=${encodeURIComponent(include)}`,
+    {
+      headers: {
+        Referer: `https://www.zhihu.com/people/${encodeURIComponent(slug)}`,
+        "User-Agent": "Mozilla/5.0",
+      },
+    },
+  ) as Record<string, unknown>;
+  return { ...profile, url: `https://www.zhihu.com/people/${slug}` };
+}
+
+async function fetchLeetCode(slugValue: string | number) {
+  const slug = String(slugValue);
+  if (!/^[a-zA-Z0-9_-]{2,80}$/.test(slug)) {
+    throw new SafeFetchError("力扣用户名格式不正确");
+  }
+  const query = `query getUserProfile($username: String!) {
+    userProfileUserQuestionProgress(userSlug: $username) {
+      numAcceptedQuestions { count difficulty }
+    }
+    userProfilePublicProfile(userSlug: $username) {
+      siteRanking
+      profile {
+        userSlug realName aboutMe userAvatar location github job
+        school: schoolV2 { name }
+        company: companyV2 { name }
+      }
+    }
+  }`;
+  const response = await fetchFixedResponse("https://leetcode.cn/graphql/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Referer: `https://leetcode.cn/u/${encodeURIComponent(slug)}/`,
+    },
+    body: JSON.stringify({ query, variables: { username: slug } }),
+  });
+  const payload = await response.json() as {
+    errors?: Array<{ message?: string }>;
+    data?: {
+      userProfileUserQuestionProgress?: {
+        numAcceptedQuestions?: Array<{ count?: number; difficulty?: string }>;
+      };
+      userProfilePublicProfile?: {
+        siteRanking?: number;
+        profile?: Record<string, unknown>;
+      };
+    };
+  };
+  const publicProfile = payload.data?.userProfilePublicProfile;
+  if (!publicProfile?.profile) {
+    throw new SafeFetchError(payload.errors?.[0]?.message || "力扣没有返回用户资料", 502);
+  }
+  const accepted = Object.fromEntries(
+    (payload.data?.userProfileUserQuestionProgress?.numAcceptedQuestions ?? [])
+      .map((item) => [String(item.difficulty ?? "").toLowerCase(), Number(item.count) || 0]),
+  );
+  return {
+    username: slug,
+    profile: publicProfile.profile,
+    siteRanking: Number(publicProfile.siteRanking) || 0,
+    accepted: {
+      easy: accepted.easy ?? 0,
+      medium: accepted.medium ?? 0,
+      hard: accepted.hard ?? 0,
+      total: Object.values(accepted).reduce((sum, value) => sum + value, 0),
+    },
+    url: `https://leetcode.cn/u/${slug}/`,
+  };
+}
+
+async function fetchNowcoder(idValue: string | number) {
+  const id = String(idValue);
+  if (!/^\d{1,20}$/.test(id)) {
+    throw new SafeFetchError("牛客用户 ID 必须是数字");
+  }
+  const response = await fetchFixedResponse(`https://www.nowcoder.com/users/${id}`, {
+    headers: { Accept: "text/html" },
+  });
+  const html = await response.text();
+  if (html.length > 1024 * 1024) {
+    throw new SafeFetchError("上游响应超过 1 MB 限制", 413);
+  }
+  const marker = "window.__INITIAL_STATE__=";
+  const start = html.indexOf(marker);
+  const end = start < 0 ? -1 : html.indexOf(";(function()", start);
+  if (start < 0 || end < 0) {
+    throw new SafeFetchError("牛客页面没有返回公开资料", 502);
+  }
+  let state: {
+    store?: {
+      profile?: {
+        profile?: Record<string, unknown>;
+        followData?: Record<string, unknown>;
+      };
+    };
+  };
+  try {
+    state = JSON.parse(html.slice(start + marker.length, end));
+  } catch {
+    throw new SafeFetchError("牛客公开资料解析失败", 502);
+  }
+  const profile = state.store?.profile?.profile;
+  if (!profile) throw new SafeFetchError("牛客用户不存在或资料不可见", 404);
+  return {
+    ...profile,
+    stats: state.store?.profile?.followData ?? {},
+    url: `https://www.nowcoder.com/users/${id}`,
+  };
+}
+
 export async function executeWorkflow(
   config: WorkflowConfig,
   providedInputs: Record<string, unknown>,
@@ -218,6 +378,18 @@ export async function executeWorkflow(
       try {
         if (request.type === "bilibili-profile") {
           context.requests[request.id] = await fetchBilibili(String(inputs.uid));
+          continue;
+        }
+        if (request.type === "zhihu-profile") {
+          context.requests[request.id] = await fetchZhihu(String(inputs.token));
+          continue;
+        }
+        if (request.type === "leetcode-profile") {
+          context.requests[request.id] = await fetchLeetCode(String(inputs.username));
+          continue;
+        }
+        if (request.type === "nowcoder-profile") {
+          context.requests[request.id] = await fetchNowcoder(String(inputs["user-id"]));
           continue;
         }
 

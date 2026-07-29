@@ -10,6 +10,9 @@ describe("workflow schema", () => {
       "custom-json",
       "multi-source-profile",
       "api-dashboard",
+      "nowcoder-user",
+      "zhihu-user",
+      "leetcode-user",
     ] as const) {
       expect(workflowConfigSchema.safeParse(getTemplate(key).config).success).toBe(true);
     }

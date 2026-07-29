@@ -108,15 +108,16 @@ const styles = `
     background: radial-gradient(circle at 95% 0%, rgba(251,114,153,.16), transparent 34%), var(--surface);
   }
   .preset-bilibili .craft-hero {
-    min-height: 132px;
+    min-height: 184px;
     background: linear-gradient(0deg, rgba(38,24,32,.54), rgba(251,114,153,.08)), linear-gradient(135deg, #fb7299, #8d6de8);
+    background-position: center center; background-size: cover;
   }
   .preset-bilibili .craft-avatar, .preset-bilibili .craft-avatar-fallback {
     border: 3px solid white; border-radius: 50%; box-shadow: 0 4px 16px rgba(42,21,32,.24);
   }
-  .preset-bilibili .craft-avatar-wrap { width: 68px; height: 68px; }
-  .preset-bilibili .craft-avatar { width: 68px; height: 68px; }
-  .preset-bilibili .craft-avatar-frame { width: 96px; height: 96px; }
+  .preset-bilibili .craft-avatar-wrap { width: 74px; height: 74px; margin: 0 3px 2px; }
+  .preset-bilibili .craft-avatar { width: 74px; height: 74px; }
+  .preset-bilibili .craft-avatar-frame { width: 102px; height: 102px; max-width: none; inset: -14px; transform: none; }
   .preset-bilibili .craft-identity { text-shadow: 0 1px 5px rgba(0,0,0,.55); }
   .preset-bilibili .craft-badge { border-radius: 5px; background: #fb7299; }
   .preset-bilibili .craft-stat { border-color: rgba(251,114,153,.14); background: rgba(251,114,153,.065); }

@@ -80,5 +80,61 @@ export function getSampleResponse(template: TemplateKey): unknown {
       },
     };
   }
+  if (template === "nowcoder-user") {
+    return {
+      input: { "user-id": 676891780 },
+      requests: {
+        nowcoder: {
+          nickname: "nowcodercom",
+          headImgUrl: "https://uploadfiles.nowcoder.com/images/20220905/676891780_1662375856476/E2BB4E6C0666DF6F99D6A2A58463BC37",
+          userBgImgUrl: "https://uploadfiles.nowcoder.com/files/20230322/68_1679458244538/pc_jl.jpg",
+          headDecorateUrl: "",
+          honorLevelName: "出师牛 Lv.3",
+          authDisplayInfo: "telecom SudParis · Java",
+          introduction: "持续学习，持续分享。",
+          stats: { likeCount: 8, fansCount: 1, followCount: 4, visitorCount: 52 },
+          url: "https://www.nowcoder.com/users/676891780",
+        },
+      },
+    };
+  }
+  if (template === "zhihu-user") {
+    return {
+      input: { token: "excited-vczh" },
+      requests: {
+        zhihu: {
+          name: "梅启铭",
+          headline: "分享知识、经验和见解",
+          avatar_url: "https://pic1.zhimg.com/v2-ada18a9354a3831171306f2c7ce20aaf_xl.jpg",
+          user_type: "people",
+          follower_count: 834985,
+          answer_count: 7,
+          articles_count: 147,
+          voteup_count: 88384,
+          url: "https://www.zhihu.com/people/excited-vczh",
+        },
+      },
+    };
+  }
+  if (template === "leetcode-user") {
+    return {
+      input: { username: "leetcode" },
+      requests: {
+        leetcode: {
+          username: "leetcode",
+          profile: {
+            realName: "LeetCode",
+            aboutMe: "用力扣，越能 Code！",
+            userAvatar: "https://assets.leetcode.cn/aliyun-lc-upload/uploaded_files/2021/03/73c9f099-abbe-4d94-853f-f8abffd459cd/leetcode.png",
+            company: { name: "力扣 LeetCode" },
+            job: "Problem Solver",
+          },
+          siteRanking: 100000,
+          accepted: { easy: 25, medium: 26, hard: 14, total: 65 },
+          url: "https://leetcode.cn/u/leetcode/",
+        },
+      },
+    };
+  }
   return { input: { id: 1 }, requests: { user: person } };
 }
