@@ -128,7 +128,17 @@ export const cardBlockSchema = z.discriminatedUnion("type", [
 export const themeSchema = z.object({
   direction: z.enum(["horizontal", "vertical"]).default("horizontal"),
   mode: z.enum(["light", "dark"]).default("light"),
-  preset: z.enum(["editorial", "minimal", "glass", "poster", "github", "bilibili"]).default("editorial"),
+  preset: z.enum([
+    "editorial",
+    "minimal",
+    "glass",
+    "poster",
+    "github",
+    "bilibili",
+    "nowcoder",
+    "zhihu",
+    "leetcode",
+  ]).default("editorial"),
   accent: z.string().regex(/^#[0-9a-fA-F]{6}$/).default("#ff6b84"),
   surface: z.string().regex(/^#[0-9a-fA-F]{6}$/).default("#fffdf9"),
   text: z.string().regex(/^#[0-9a-fA-F]{6}$/).default("#202126"),

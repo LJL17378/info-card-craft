@@ -34,6 +34,7 @@ test("offers Nowcoder, Zhihu and LeetCode templates with live previews", async (
   await page.getByRole("button", { name: /力扣进度/ }).click();
   await expect(page.getByText("LeetCode", { exact: true })).toBeVisible();
   await expect(page.getByText("已解决", { exact: true })).toBeVisible();
+  await expect(page.locator(".leetcode-ring")).toBeVisible();
 });
 
 test("public demo render endpoint returns a normalized card", async ({ request }) => {

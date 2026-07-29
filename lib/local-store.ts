@@ -38,6 +38,48 @@ function seedCards(): StoredCard[] {
   ];
 }
 
+function migratePlatformPreset(card: StoredCard): StoredCard {
+  const config = card.draftConfig;
+  if (config.template === "nowcoder-user" && config.theme.preset === "minimal") {
+    const blocks = config.layout?.blocks.map((block) =>
+      block.type === "hero" ? { ...block, background: undefined } : block,
+    );
+    return {
+      ...card,
+      draftConfig: {
+        ...config,
+        layout: blocks ? { blocks } : config.layout,
+        theme: {
+          ...config.theme,
+          preset: "nowcoder",
+          surface: "#f6fbf8",
+          text: "#18231f",
+          radius: 20,
+        },
+      },
+    };
+  }
+  if (config.template === "zhihu-user" && config.theme.preset === "minimal") {
+    return {
+      ...card,
+      draftConfig: {
+        ...config,
+        theme: { ...config.theme, preset: "zhihu", text: "#121212" },
+      },
+    };
+  }
+  if (config.template === "leetcode-user" && config.theme.preset === "glass") {
+    return {
+      ...card,
+      draftConfig: {
+        ...config,
+        theme: { ...config.theme, preset: "leetcode", radius: 18 },
+      },
+    };
+  }
+  return card;
+}
+
 export function listLocalCards(): StoredCard[] {
   if (typeof window === "undefined") return [];
   const raw = window.localStorage.getItem(STORAGE_KEY);
@@ -47,7 +89,9 @@ export function listLocalCards(): StoredCard[] {
     return cards;
   }
   try {
-    return JSON.parse(raw) as StoredCard[];
+    const cards = (JSON.parse(raw) as StoredCard[]).map(migratePlatformPreset);
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
+    return cards;
   } catch {
     return seedCards();
   }

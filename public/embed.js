@@ -122,6 +122,84 @@ const styles = `
   .preset-bilibili .craft-badge { border-radius: 5px; background: #fb7299; }
   .preset-bilibili .craft-stat { border-color: rgba(251,114,153,.14); background: rgba(251,114,153,.065); }
   .preset-bilibili .craft-link { border-radius: 999px; background: #fb7299; }
+  .preset-nowcoder {
+    padding: 12px; border-color: rgba(0,181,120,.16) !important;
+    background: linear-gradient(90deg,#00b578 0 6px,transparent 6px), radial-gradient(circle at 96% 0%,rgba(0,181,120,.12),transparent 34%), var(--surface);
+  }
+  .preset-nowcoder .craft-hero {
+    min-height: 106px; padding: 16px 18px; align-items: center; color: #18231f;
+    border: 1px solid rgba(0,181,120,.13); background: rgba(255,255,255,.82) !important;
+  }
+  .preset-nowcoder .craft-avatar-wrap, .preset-nowcoder .craft-avatar { width: 68px; height: 68px; }
+  .preset-nowcoder .craft-avatar, .preset-nowcoder .craft-avatar-fallback {
+    border: 3px solid #fff; border-radius: 50%; box-shadow: 0 0 0 2px #00b578, 0 8px 22px rgba(0,102,70,.14);
+  }
+  .preset-nowcoder .craft-avatar-frame { width: 94px; height: 94px; max-width: none; }
+  .preset-nowcoder .craft-title { color: #14211c; font-size: 21px; }
+  .preset-nowcoder .craft-badge { color: #087d58; border: 1px solid rgba(0,181,120,.2); border-radius: 999px; background: #e4f8f0; }
+  .preset-nowcoder .craft-subtitle { color: #66756f; opacity: 1; }
+  .preset-nowcoder .craft-label { color: #008b60; }
+  .preset-nowcoder .craft-stats { padding: 4px 9px; border-block: 1px solid rgba(24,35,31,.08); background: rgba(255,255,255,.52); }
+  .preset-nowcoder .craft-stat { position: relative; padding: 10px 8px; border: 0; border-radius: 0; background: transparent; }
+  .preset-nowcoder .craft-stat:not(:last-child)::after { content: ""; position: absolute; inset: 11px 0 11px auto; width: 1px; background: rgba(24,35,31,.09); }
+  .preset-nowcoder .craft-stat strong { color: #14211c; font-size: 17px; }
+  .preset-nowcoder .craft-link { min-height: 40px; border-radius: 10px; background: #00a971; }
+  .preset-zhihu {
+    padding-top: 8px; border-top: 4px solid #1772f6 !important; background: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  .preset-zhihu .craft-hero {
+    min-height: 94px; padding: 12px 8px 18px; align-items: center; color: #121212;
+    border-bottom: 1px solid #ebebeb; border-radius: 0; background: transparent !important;
+  }
+  .preset-zhihu .craft-avatar, .preset-zhihu .craft-avatar-fallback { width: 66px; height: 66px; border: 1px solid #ebebeb; border-radius: 6px; }
+  .preset-zhihu .craft-avatar-wrap { width: 66px; height: 66px; }
+  .preset-zhihu .craft-title { color: #121212; font-size: 22px; font-weight: 700; }
+  .preset-zhihu .craft-badge { color: #1772f6; border-radius: 3px; background: rgba(23,114,246,.1); }
+  .preset-zhihu .craft-subtitle { color: #646464; opacity: 1; font-size: 11px; }
+  .preset-zhihu .craft-stats { gap: 0; border: 1px solid #ebebeb; border-radius: 4px; }
+  .preset-zhihu .craft-stat { padding: 11px 12px; border: 0; border-radius: 0; background: #fff; text-align: center; }
+  .preset-zhihu .craft-stat:not(:last-child) { border-right: 1px solid #ebebeb; }
+  .preset-zhihu .craft-stat span { color: #8590a6; opacity: 1; }
+  .preset-zhihu .craft-stat strong { color: #121212; font-size: 16px; }
+  .preset-zhihu .craft-link { border-radius: 4px; background: #1772f6; }
+  .preset-leetcode {
+    border-color: #323232 !important;
+    background: radial-gradient(circle at 88% 4%,rgba(255,161,22,.12),transparent 32%),#1a1a1a;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  .preset-leetcode .craft-hero {
+    min-height: 92px; padding: 11px 7px 17px; align-items: center; color: #f3f3f3;
+    border-bottom: 1px solid #303030; border-radius: 0; background: transparent !important;
+  }
+  .preset-leetcode .craft-avatar, .preset-leetcode .craft-avatar-fallback { border: 1px solid #4b4b4b; border-radius: 50%; background: #262626; }
+  .preset-leetcode .craft-title { font-weight: 650; }
+  .preset-leetcode .craft-badge { color: #ffa116; border: 1px solid rgba(255,161,22,.28); border-radius: 999px; background: rgba(255,161,22,.09); }
+  .leetcode-progress {
+    padding: 14px 16px; border: 1px solid #303030; border-radius: 12px; display: grid;
+    grid-template-columns: 126px 1fr; align-items: center; gap: 22px; background: rgba(255,255,255,.018);
+  }
+  .leetcode-ring { width: 116px; aspect-ratio: 1; padding: 12px; border-radius: 50%; box-shadow: 0 0 26px rgba(255,161,22,.07); }
+  .leetcode-ring > div {
+    width: 100%; height: 100%; border-radius: 50%; display: grid; place-content: center;
+    text-align: center; background: #1a1a1a; box-shadow: inset 0 0 0 1px #303030;
+  }
+  .leetcode-ring strong { color: #f3f3f3; font-size: 25px; line-height: 1; }
+  .leetcode-ring span { margin-top: 5px; color: #8a8a8a; font-size: 8px; }
+  .leetcode-legend { display: grid; gap: 10px; }
+  .leetcode-legend > div { display: grid; grid-template-columns: 8px 1fr auto; align-items: center; gap: 9px; }
+  .leetcode-legend i { width: 7px; height: 7px; border-radius: 50%; }
+  .leetcode-legend .difficulty-0 { background: #00b8a3; }
+  .leetcode-legend .difficulty-1 { background: #ffc01e; }
+  .leetcode-legend .difficulty-2 { background: #ef4743; }
+  .leetcode-legend span { color: #9b9b9b; font-size: 10px; }
+  .leetcode-legend strong { color: #e8e8e8; font-size: 14px; }
+  .preset-leetcode .craft-label { color: #ffa116; }
+  .preset-leetcode .craft-link { color: #171717; border-radius: 8px; background: #ffa116; }
+  @media (max-width: 420px) {
+    .leetcode-progress { grid-template-columns: 104px 1fr; gap: 12px; }
+    .leetcode-ring { width: 98px; }
+  }
   @media (max-width: 380px) { .craft-stats { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } }
   @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
 `;
@@ -251,7 +329,9 @@ class InfoCardCraft extends HTMLElement {
         const avatarWrap = element("span", "craft-avatar-wrap");
         if (block.avatar) {
           const avatar = element("img", "craft-avatar");
-          avatar.src = block.avatar;
+          avatar.src = theme.preset === "zhihu"
+            ? new URL(`/api/media?url=${encodeURIComponent(block.avatar)}`, API_BASE).href
+            : block.avatar;
           avatar.alt = "";
           avatar.referrerPolicy = "no-referrer";
           avatarWrap.append(avatar);
@@ -280,14 +360,37 @@ class InfoCardCraft extends HTMLElement {
         section.append(element("p", "", block.content));
         card.append(section);
       } else if (block.type === "stats") {
-        const stats = element("section", "craft-stats");
-        stats.style.gridTemplateColumns = `repeat(${block.columns}, minmax(0, 1fr))`;
-        for (const item of block.items) {
-          const stat = element("div", "craft-stat");
-          stat.append(element("span", "", item.label), element("strong", "", item.value || "—"));
-          stats.append(stat);
+        if (theme.preset === "leetcode" && block.items.length >= 4) {
+          const values = block.items.map((item) => Number(String(item.value).replace(/[^\d.]/g, "")) || 0);
+          const distribution = values.slice(1, 4);
+          const distributionTotal = distribution.reduce((sum, value) => sum + value, 0) || 1;
+          const easyEnd = distribution[0] / distributionTotal * 100;
+          const mediumEnd = easyEnd + distribution[1] / distributionTotal * 100;
+          const progress = element("section", "leetcode-progress");
+          progress.setAttribute("aria-label", "力扣解题难度分布");
+          const ring = element("div", "leetcode-ring");
+          ring.style.background = `conic-gradient(from -45deg,#00b8a3 0 ${easyEnd}%,#ffc01e ${easyEnd}% ${mediumEnd}%,#ef4743 ${mediumEnd}% 100%)`;
+          const center = element("div");
+          center.append(element("strong", "", String(values[0])), element("span", "", "已解决"));
+          ring.append(center);
+          const legend = element("div", "leetcode-legend");
+          block.items.slice(1, 4).forEach((item, index) => {
+            const row = element("div");
+            row.append(element("i", `difficulty-${index}`), element("span", "", item.label), element("strong", "", item.value || "0"));
+            legend.append(row);
+          });
+          progress.append(ring, legend);
+          card.append(progress);
+        } else {
+          const stats = element("section", "craft-stats");
+          stats.style.gridTemplateColumns = `repeat(${block.columns}, minmax(0, 1fr))`;
+          for (const item of block.items) {
+            const stat = element("div", "craft-stat");
+            stat.append(element("span", "", item.label), element("strong", "", item.value || "—"));
+            stats.append(stat);
+          }
+          card.append(stats);
         }
-        card.append(stats);
       } else if (block.type === "image" && block.src) {
         const image = element("img", `craft-image ratio-${block.ratio}`);
         image.src = block.src;

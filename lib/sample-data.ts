@@ -105,7 +105,7 @@ export function getSampleResponse(template: TemplateKey): unknown {
         zhihu: {
           name: "梅启铭",
           headline: "分享知识、经验和见解",
-          avatar_url: "https://pic1.zhimg.com/v2-ada18a9354a3831171306f2c7ce20aaf_xl.jpg",
+          avatar_url: "https://picx.zhimg.com/v2-ada18a9354a3831171306f2c7ce20aaf_xl.jpg?source=32738c0c&needBackground=1",
           user_type: "people",
           follower_count: 834985,
           answer_count: 7,

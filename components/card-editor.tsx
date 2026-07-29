@@ -491,7 +491,17 @@ export function CardEditor({ cardId }: { cardId: string }) {
             {step === 4 && (
               <>
                 <div className="field"><label>视觉预设</label><div className="preset-grid">
-                  {(["editorial", "minimal", "glass", "poster", "github", "bilibili"] as const).map((preset) => <button className={config.theme.preset === preset ? "active" : ""} key={preset} onClick={() => patch({ theme: { ...config.theme, preset } })} type="button"><i className={`preset-swatch ${preset}`} /><strong>{preset === "editorial" ? "杂志" : preset === "minimal" ? "极简" : preset === "glass" ? "玻璃" : preset === "poster" ? "海报" : preset === "github" ? "GitHub" : "B 站"}</strong></button>)}
+                  {([
+                    ["editorial", "杂志"],
+                    ["minimal", "极简"],
+                    ["glass", "玻璃"],
+                    ["poster", "海报"],
+                    ["github", "GitHub"],
+                    ["bilibili", "B 站"],
+                    ["nowcoder", "牛客"],
+                    ["zhihu", "知乎"],
+                    ["leetcode", "力扣"],
+                  ] as const).map(([preset, label]) => <button className={config.theme.preset === preset ? "active" : ""} key={preset} onClick={() => patch({ theme: { ...config.theme, preset } })} type="button"><i className={`preset-swatch ${preset}`} /><strong>{label}</strong></button>)}
                 </div></div>
                 <div className="field-row">
                   <div className="field"><label htmlFor="card-direction">卡片方向</label><select id="card-direction" value={config.theme.direction} onChange={(e) => patch({ theme: { ...config.theme, direction: e.target.value as "horizontal" | "vertical" } })}><option value="horizontal">横向</option><option value="vertical">纵向</option></select></div>

@@ -54,6 +54,9 @@ function LegacyBlocks(data: CardData): ResolvedBlock[] {
 
 function Block({ block, preset }: { block: ResolvedBlock; preset: CardTheme["preset"] }) {
   if (block.type === "hero") {
+    const avatarSource = preset === "zhihu" && block.avatar
+      ? `/api/media?url=${encodeURIComponent(block.avatar)}`
+      : block.avatar;
     return (
       <section
         className={`craft-block craft-hero align-${block.align}`}
@@ -64,9 +67,9 @@ function Block({ block, preset }: { block: ResolvedBlock; preset: CardTheme["pre
         } : undefined}
       >
         <span className="craft-avatar-wrap">
-          {block.avatar ? (
+          {avatarSource ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img className="craft-avatar" src={block.avatar} alt="" referrerPolicy="no-referrer" />
+            <img className="craft-avatar" src={avatarSource} alt="" referrerPolicy="no-referrer" />
           ) : <span className="craft-avatar craft-avatar-fallback">{block.title.slice(0, 1)}</span>}
           {block.avatarFrame && (
             // eslint-disable-next-line @next/next/no-img-element
@@ -93,6 +96,31 @@ function Block({ block, preset }: { block: ResolvedBlock; preset: CardTheme["pre
     );
   }
   if (block.type === "stats") {
+    if (preset === "leetcode" && block.items.length >= 4) {
+      const numbers = block.items.map((item) => Number(String(item.value).replace(/[^\d.]/g, "")) || 0);
+      const solved = numbers[0];
+      const distribution = numbers.slice(1, 4);
+      const distributionTotal = distribution.reduce((sum, value) => sum + value, 0) || 1;
+      const easyEnd = (distribution[0] / distributionTotal) * 100;
+      const mediumEnd = easyEnd + (distribution[1] / distributionTotal) * 100;
+      const ring = `conic-gradient(from -45deg, #00b8a3 0 ${easyEnd}%, #ffc01e ${easyEnd}% ${mediumEnd}%, #ef4743 ${mediumEnd}% 100%)`;
+      return (
+        <section className="craft-block leetcode-progress" aria-label="力扣解题难度分布">
+          <div className="leetcode-ring" style={{ background: ring }}>
+            <div><strong>{solved}</strong><span>已解决</span></div>
+          </div>
+          <div className="leetcode-legend">
+            {block.items.slice(1, 4).map((item, index) => (
+              <div key={`${item.label}-${index}`}>
+                <i className={`difficulty-${index}`} />
+                <span>{item.label}</span>
+                <strong>{item.value || "0"}</strong>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
     return (
       <section className="craft-block craft-stats" style={{ gridTemplateColumns: `repeat(${block.columns}, minmax(0, 1fr))` }}>
         {block.items.map((item, index) => (
