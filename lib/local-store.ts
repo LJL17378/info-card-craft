@@ -41,9 +41,13 @@ function seedCards(): StoredCard[] {
 function migratePlatformPreset(card: StoredCard): StoredCard {
   const config = card.draftConfig;
   if (config.template === "nowcoder-user" && config.theme.preset === "minimal") {
-    const blocks = config.layout?.blocks.map((block) =>
-      block.type === "hero" ? { ...block, background: undefined } : block,
-    );
+    const blocks = config.layout?.blocks.map((block) => {
+      if (block.type === "hero") return { ...block, background: undefined };
+      if (block.type === "text" && block.id === "bio" && block.label === "PROFILE") {
+        return { ...block, label: "求职档案" };
+      }
+      return block;
+    });
     return {
       ...card,
       draftConfig: {
@@ -60,10 +64,33 @@ function migratePlatformPreset(card: StoredCard): StoredCard {
     };
   }
   if (config.template === "zhihu-user" && config.theme.preset === "minimal") {
+    const blocks = config.layout?.blocks.map((block) => {
+      if (block.type === "hero") {
+        return {
+          ...block,
+          badge: {
+            path: "requests.zhihu.__badge",
+            fallback: "知乎创作者",
+            formatters: [],
+          },
+        };
+      }
+      if (block.type === "links") {
+        return {
+          ...block,
+          items: block.items.map((item) => ({
+            ...item,
+            label: item.label === "访问知乎主页" ? "查看回答与文章" : item.label,
+          })),
+        };
+      }
+      return block;
+    });
     return {
       ...card,
       draftConfig: {
         ...config,
+        layout: blocks ? { blocks } : config.layout,
         theme: { ...config.theme, preset: "zhihu", text: "#121212" },
       },
     };
