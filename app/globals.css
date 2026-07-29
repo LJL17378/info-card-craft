@@ -1915,13 +1915,22 @@ a {
 .preset-bilibili .craft-avatar-fallback {
   border: 3px solid white;
   border-radius: 50%;
-  outline: 3px solid #fb7299;
   box-shadow: 0 4px 16px rgba(42,21,32,.24);
 }
 
+.preset-bilibili .craft-avatar-wrap {
+  width: 68px;
+  height: 68px;
+}
+
+.preset-bilibili .craft-avatar {
+  width: 68px;
+  height: 68px;
+}
+
 .preset-bilibili .craft-avatar-frame {
-  width: 82px;
-  height: 82px;
+  width: 96px;
+  height: 96px;
 }
 
 .preset-bilibili .craft-badge {

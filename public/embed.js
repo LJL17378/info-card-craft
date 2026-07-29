@@ -112,9 +112,11 @@ const styles = `
     background: linear-gradient(0deg, rgba(38,24,32,.54), rgba(251,114,153,.08)), linear-gradient(135deg, #fb7299, #8d6de8);
   }
   .preset-bilibili .craft-avatar, .preset-bilibili .craft-avatar-fallback {
-    border: 3px solid white; border-radius: 50%; outline: 3px solid #fb7299; box-shadow: 0 4px 16px rgba(42,21,32,.24);
+    border: 3px solid white; border-radius: 50%; box-shadow: 0 4px 16px rgba(42,21,32,.24);
   }
-  .preset-bilibili .craft-avatar-frame { width: 82px; height: 82px; }
+  .preset-bilibili .craft-avatar-wrap { width: 68px; height: 68px; }
+  .preset-bilibili .craft-avatar { width: 68px; height: 68px; }
+  .preset-bilibili .craft-avatar-frame { width: 96px; height: 96px; }
   .preset-bilibili .craft-badge { border-radius: 5px; background: #fb7299; }
   .preset-bilibili .craft-stat { border-color: rgba(251,114,153,.14); background: rgba(251,114,153,.065); }
   .preset-bilibili .craft-link { border-radius: 999px; background: #fb7299; }

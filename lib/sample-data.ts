@@ -23,7 +23,7 @@ export function getSampleResponse(template: TemplateKey): unknown {
             uid: "7900967",
             name: "dogz警犬儿",
             avatar: "https://i2.hdslb.com/bfs/face/030715fb24dad5a402fd8147f06fe3624448f64d.jpg",
-            banner: "https://i2.hdslb.com/bfs/face/030715fb24dad5a402fd8147f06fe3624448f64d.jpg",
+            banner: "https://i0.hdslb.com/bfs/space/cb1c3ef50e22b6096fde67febe863494caefebad.png",
             avatarFrame: "https://i2.hdslb.com/bfs/garb/item/656119de5098823514b5473f4af7b4f4b44464d0.png",
             signature: "“致朦盖上的擦伤，童年的时光和青春心事。”",
             level: 6,

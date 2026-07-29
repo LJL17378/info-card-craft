@@ -86,7 +86,7 @@ async function fetchBilibili(uid: string | number) {
   // anti-bot policy. Use it as the reliable base for avatar and pendant, then
   // enrich it with the WBI profile (top_photo) whenever that endpoint permits.
   const cardPayload = (await safeFetchJson(
-    `https://api.bilibili.com/x/web-interface/card?mid=${encodeURIComponent(String(uid))}`,
+    `https://api.bilibili.com/x/web-interface/card?mid=${encodeURIComponent(String(uid))}&photo=true`,
     { headers },
   )) as {
     code?: number;
@@ -96,6 +96,7 @@ async function fetchBilibili(uid: string | number) {
         level_info?: { current_level?: number };
         pendant?: { image?: string; image_enhance?: string };
       };
+      space?: { l_img?: string; s_img?: string };
       archive_count?: number;
       like_num?: number;
     };
@@ -164,9 +165,11 @@ async function fetchBilibili(uid: string | number) {
       uid: String(uid),
       name: enriched.name ?? card.name ?? "",
       avatar: enriched.face ?? card.face ?? "",
-      // `top_photo` is occasionally blocked on data-center IPs. In that case
-      // keep the visual image-backed instead of returning an empty cover.
-      banner: enriched.top_photo ?? String(card.face ?? ""),
+      banner:
+        cardPayload.data.space?.l_img ??
+        cardPayload.data.space?.s_img ??
+        enriched.top_photo ??
+        "",
       avatarFrame:
         pendant?.image_enhance ?? pendant?.image ?? "",
       signature: enriched.sign ?? card.sign ?? "",
