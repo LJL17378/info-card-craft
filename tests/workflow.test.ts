@@ -66,4 +66,22 @@ describe("multi-source workflow", () => {
       },
     });
   });
+
+  it("builds a social profile from embed inputs without making a network request", async () => {
+    const config = structuredClone(getTemplate("douyin-profile").config);
+    const result = await executeWorkflow(config, {
+      name: "Video Maker",
+      handle: "video-maker",
+      followers: 12000,
+      likes: 88000,
+      "profile-url": "https://www.douyin.com/user/example",
+    });
+
+    expect(mocks.safeFetchJson).not.toHaveBeenCalled();
+    expect(result.data.identity.title).toBe("Video Maker");
+    expect(result.data.blocks.find((block) => block.type === "stats")).toMatchObject({
+      type: "stats",
+      items: expect.arrayContaining([{ label: "粉丝", value: "1.2万" }]),
+    });
+  });
 });

@@ -9,6 +9,8 @@ export const templateKeySchema = z.enum([
   "nowcoder-user",
   "zhihu-user",
   "leetcode-user",
+  "douyin-profile",
+  "xiaohongshu-profile",
 ]);
 
 const valueSchema = z.union([z.string(), z.number(), z.boolean()]);
@@ -57,6 +59,7 @@ export const requestConfigSchema = z.object({
     "nowcoder-profile",
     "zhihu-profile",
     "leetcode-profile",
+    "manual-profile",
   ]).default("http"),
   url: z.string().max(2048),
   query: z.record(z.string(), z.string()).default({}),
@@ -138,6 +141,8 @@ export const themeSchema = z.object({
     "nowcoder",
     "zhihu",
     "leetcode",
+    "douyin",
+    "xiaohongshu",
   ]).default("editorial"),
   accent: z.string().regex(/^#[0-9a-fA-F]{6}$/).default("#ff6b84"),
   surface: z.string().regex(/^#[0-9a-fA-F]{6}$/).default("#fffdf9"),

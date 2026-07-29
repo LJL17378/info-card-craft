@@ -392,6 +392,10 @@ export async function executeWorkflow(
           context.requests[request.id] = await fetchNowcoder(String(inputs["user-id"]));
           continue;
         }
+        if (request.type === "manual-profile") {
+          context.requests[request.id] = { ...inputs, url: String(inputs["profile-url"] ?? "") };
+          continue;
+        }
 
         const url = new URL(interpolateFromSource(request.url, context));
         for (const [key, value] of Object.entries(request.query)) {

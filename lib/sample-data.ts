@@ -136,5 +136,40 @@ export function getSampleResponse(template: TemplateKey): unknown {
       },
     };
   }
+  if (template === "douyin-profile") {
+    return {
+      input: {},
+      requests: {
+        profile: {
+          name: "镜头里的日常",
+          handle: "daily.frames",
+          avatar: "",
+          bio: "记录生活，也记录闪光时刻。",
+          following: 128,
+          followers: 24000,
+          likes: 318000,
+          url: "https://www.douyin.com/",
+        },
+      },
+    };
+  }
+  if (template === "xiaohongshu-profile") {
+    return {
+      input: {},
+      requests: {
+        profile: {
+          name: "周末生活研究所",
+          "red-id": "weekend.lab",
+          avatar: "",
+          bio: "咖啡、旅行和一些让生活变好的小事。",
+          following: 86,
+          followers: 12800,
+          engagement: 96000,
+          notes: 72,
+          url: "https://www.xiaohongshu.com/",
+        },
+      },
+    };
+  }
   return { input: { id: 1 }, requests: { user: person } };
 }

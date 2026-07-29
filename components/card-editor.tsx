@@ -501,6 +501,8 @@ export function CardEditor({ cardId }: { cardId: string }) {
                     ["nowcoder", "牛客"],
                     ["zhihu", "知乎"],
                     ["leetcode", "力扣"],
+                    ["douyin", "抖音"],
+                    ["xiaohongshu", "小红书"],
                   ] as const).map(([preset, label]) => <button className={config.theme.preset === preset ? "active" : ""} key={preset} onClick={() => patch({ theme: { ...config.theme, preset } })} type="button"><i className={`preset-swatch ${preset}`} /><strong>{label}</strong></button>)}
                 </div></div>
                 <div className="field-row">

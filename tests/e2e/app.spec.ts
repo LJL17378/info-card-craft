@@ -31,6 +31,8 @@ test("offers Nowcoder, Zhihu and LeetCode templates with live previews", async (
   await page.goto("/studio/new");
   await expect(page.getByRole("button", { name: /牛客档案/ })).toBeVisible();
   await expect(page.getByRole("button", { name: /知乎创作者/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /抖音主页/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /小红书主页/ })).toBeVisible();
   await page.getByRole("button", { name: /力扣进度/ }).click();
   await expect(page.getByText("LeetCode", { exact: true })).toBeVisible();
   await expect(page.getByText("已解决", { exact: true })).toBeVisible();

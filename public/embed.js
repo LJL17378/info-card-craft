@@ -196,6 +196,56 @@ const styles = `
   .leetcode-legend strong { color: #e8e8e8; font-size: 14px; }
   .preset-leetcode .craft-label { color: #ffa116; }
   .preset-leetcode .craft-link { color: #171717; border-radius: 8px; background: #ffa116; }
+  .preset-douyin {
+    position: relative; isolation: isolate; border-color: #29292f !important;
+    background: radial-gradient(circle at 0% 100%,rgba(37,244,238,.1),transparent 32%),radial-gradient(circle at 100% 0%,rgba(254,44,85,.11),transparent 34%),#0f0f12;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  .preset-douyin .craft-hero {
+    min-height: 118px; padding: 20px; align-items: center; color: #f7f7f8; border: 1px solid #29292f;
+    background: linear-gradient(115deg,rgba(37,244,238,.09),transparent 40%,rgba(254,44,85,.1)),#17171c !important;
+  }
+  .preset-douyin .craft-avatar-wrap, .preset-douyin .craft-avatar { width: 70px; height: 70px; }
+  .preset-douyin .craft-avatar, .preset-douyin .craft-avatar-fallback {
+    border: 3px solid #101014; border-radius: 50%; background: linear-gradient(135deg,#25f4ee 0 48%,#fe2c55 52%);
+    box-shadow: -3px 0 #25f4ee,3px 0 #fe2c55;
+  }
+  .preset-douyin .craft-title { color: #fff; font-size: 22px; }
+  .preset-douyin .craft-badge { color: #0d0d10; border-radius: 999px; background: #25f4ee; box-shadow: 2px 2px 0 #fe2c55; }
+  .preset-douyin .craft-subtitle { color: #a9a9b1; opacity: 1; }
+  .preset-douyin .craft-label { color: #25f4ee; }
+  .preset-douyin .craft-text p { color: #d1d1d5; opacity: .82; }
+  .preset-douyin .craft-stats { gap: 8px; }
+  .preset-douyin .craft-stat { padding: 13px; border-color: #2b2b31; border-radius: 10px; background: #18181d; }
+  .preset-douyin .craft-stat span { color: #8d8d96; opacity: 1; }
+  .preset-douyin .craft-stat strong { color: #fff; font-size: 17px; }
+  .preset-douyin .craft-stat:nth-child(2) strong { color: #25f4ee; }
+  .preset-douyin .craft-stat:nth-child(3) strong { color: #ff5474; }
+  .preset-douyin .craft-link { min-height: 41px; color: #fff; border-radius: 9px; background: linear-gradient(90deg,#14c9c3,#25f4ee 44%,#fe2c55 46%,#e9264c); }
+  .preset-xiaohongshu {
+    position: relative; border-color: rgba(255,36,66,.13) !important;
+    background: radial-gradient(circle at 100% 0%,rgba(255,36,66,.08),transparent 31%),#fffdfd;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  .preset-xiaohongshu::before {
+    content: "REDNOTE"; position: absolute; top: 15px; right: 18px; z-index: 2;
+    color: rgba(255,36,66,.18); font-size: 9px; font-weight: 900; letter-spacing: .16em;
+  }
+  .preset-xiaohongshu .craft-hero { min-height: 112px; padding: 18px; align-items: center; color: #222; border: 1px solid rgba(255,36,66,.1); background: rgba(255,255,255,.76) !important; }
+  .preset-xiaohongshu .craft-avatar-wrap, .preset-xiaohongshu .craft-avatar { width: 68px; height: 68px; }
+  .preset-xiaohongshu .craft-avatar, .preset-xiaohongshu .craft-avatar-fallback {
+    border: 3px solid #fff; border-radius: 50%; background: linear-gradient(145deg,#ff8b9e,#ff2442);
+    box-shadow: 0 0 0 2px #ff2442,0 8px 20px rgba(255,36,66,.12);
+  }
+  .preset-xiaohongshu .craft-title { color: #222; font-size: 21px; }
+  .preset-xiaohongshu .craft-badge { color: #ff2442; border: 1px solid rgba(255,36,66,.16); border-radius: 999px; background: #fff1f3; }
+  .preset-xiaohongshu .craft-subtitle { color: #777; opacity: 1; }
+  .preset-xiaohongshu .craft-label { color: #ff2442; }
+  .preset-xiaohongshu .craft-stats { gap: 0; padding: 5px 4px; border-block: 1px solid #f1eeee; }
+  .preset-xiaohongshu .craft-stat { padding: 10px 7px; border: 0; border-radius: 0; background: transparent; text-align: center; }
+  .preset-xiaohongshu .craft-stat strong { color: #222; font-size: 15px; }
+  .preset-xiaohongshu .craft-stat span { color: #999; opacity: 1; }
+  .preset-xiaohongshu .craft-link { min-height: 40px; border-radius: 999px; background: #ff2442; }
   @media (max-width: 420px) {
     .leetcode-progress { grid-template-columns: 104px 1fr; gap: 12px; }
     .leetcode-ring { width: 98px; }
